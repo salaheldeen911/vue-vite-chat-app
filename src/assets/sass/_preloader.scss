@@ -1,0 +1,109 @@
+$main_color: #2c3e50;
+
+.preloader {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #4981a4 0%, #a5aabc 50%, #e8ecef 100%);
+    transition: opacity 1s linear;
+
+    .main-box {
+        display: flex;
+        width: 200px;
+        height: 55px;
+        overflow: hidden;
+
+        .up {
+            animation: up 1s infinite ease-in-out alternate;
+            animation: up 500ms infinite cubic-bezier(0.67, 1.38, 0.74, 1.37);
+        }
+
+        .down {
+            animation: down 500ms infinite cubic-bezier(0.67, 1.38, 0.74, 1.37);
+            transform: translateY(-160%);
+        }
+
+        .colomn {
+            width: 50px;
+            height: 100%;
+            position: relative;
+
+            .cyrcle {
+                height: 5px;
+                width: 5px;
+                background-color: $main_color;
+                border-radius: 50%;
+                margin: auto;
+                margin-top: 7px;
+            }
+
+            .big {
+                width: 8px;
+                height: 8px;
+                transform: translateX(0.09px);
+            }
+        }
+    }
+
+    .loading {
+        display: flex;
+        align-items: baseline;
+        margin-top: 50px;
+
+        h3 {
+            margin: 5px;
+            color: $main_color;
+            text-shadow: 1px 1px 2px black, 0 0 25px $main_color, 0 0 5px darken($color: $main_color, $amount: 10%);
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: $main_color;
+            border-radius: 50%;
+            margin: 5px;
+            animation: dots 1s ease-in-out infinite alternate;
+        }
+
+        .dot2 {
+            animation-delay: 0.3s;
+        }
+
+        .dot3 {
+            animation-delay: 0.6s;
+        }
+    }
+}
+
+@keyframes up {
+    0% {
+        transform: translateY(0%);
+    }
+
+    100% {
+        transform: translateY(-50%);
+    }
+}
+
+@keyframes down {
+    0% {
+        transform: translateY(-160%);
+    }
+
+    100% {
+        transform: translateY(-110%);
+    }
+}
+
+@keyframes dots {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}

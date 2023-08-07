@@ -1,0 +1,178 @@
+%staticButtons {
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+#todoMain {
+  overflow: hidden;
+  background: linear-gradient(90deg, #4981a4 0%, #a5aabc 50%, #e8ecef 100%);
+  position: relative;
+
+  .todo-container {
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 100%;
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #747d72;
+      border: 2px solid #747d72;
+    }
+
+    &::-webkit-scrollbar {
+      width: 10px;
+      background-color: #f5f5f5;
+    }
+
+    &::-webkit-scrollbar-track {
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+      -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+      background-color: #f5f5f5;
+    }
+
+    .todo,
+    .todoEdit {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+
+      &.even {
+        align-items: end;
+      }
+
+      &.none {
+        display: none;
+      }
+
+      .todoBody,
+      .todoInput {
+        margin: 10px 0 0 0;
+        line-height: 30px;
+        font-size: 19px;
+        font-weight: 900;
+        min-height: 75px;
+        padding: 5px 35px;
+        width: 90%;
+
+        &.ood {
+          border-radius: 30px 0;
+          background: wheat;
+          color: darkslategray;
+          box-shadow: -4px 4px 12px -1px rgba(49, 84, 84, 0.75);
+          -webkit-box-shadow: -4px 4px 12px -1px rgba(49, 84, 84, 0.75);
+          -moz-box-shadow: -4px 4px 12px -1px rgba(49, 84, 84, 0.75);
+        }
+
+        &.even {
+          border-radius: 0 30px;
+          background: darkslategray;
+          color: wheat;
+          box-shadow: -4px -4px 12px -1px rgba(115, 106, 106, 0.75);
+          -webkit-box-shadow: -4px 4px 12px -1px rgba(115, 106, 106, 0.75);
+          -moz-box-shadow: -4px -4px 12px -1px rgba(115, 106, 106, 0.75);
+        }
+      }
+
+      .todoBody {
+        overflow-wrap: break-word;
+
+        &.done {
+          text-decoration: line-through;
+        }
+      }
+
+      .todoInput {
+        text-align: center;
+        resize: none;
+        outline: none;
+        border: none;
+
+        &:focus {
+          outline: none;
+          border: none;
+        }
+      }
+
+      .todoIcons {
+        padding: 5px;
+        position: absolute;
+        top: 0;
+        font-size: 25px;
+        display: flex;
+        flex-direction: column;
+
+        &.even {
+          left: 2px;
+        }
+
+        &.ood {
+          right: 2px;
+        }
+
+        span.delete {
+          color: #cc361b;
+          cursor: pointer;
+        }
+
+        span.edit {
+          color: #0e110e;
+          cursor: pointer;
+        }
+
+        span.save {
+          color: green;
+          cursor: pointer;
+        }
+
+        span.close {
+          color: rgb(226, 156, 156);
+          cursor: pointer;
+        }
+      }
+    }
+
+    .date {
+      color: #0e110e;
+      font-weight: bolder;
+      font-size: 13px;
+      text-align: -webkit-left;
+      width: fit-content;
+
+      &.even {
+        margin: 4px 4px 4px auto;
+      }
+
+      &.ood {
+        margin: 4px auto 4px 4px;
+      }
+    }
+
+    #deleteAll {
+      @extend %staticButtons;
+      color: #cc361b;
+      transition: all 0.3s;
+      display: block;
+
+      &:hover {
+        color: red;
+        font-size: 18px;
+      }
+    }
+
+    #GoTop {
+      @extend %staticButtons;
+
+      color: #080889;
+      position: absolute;
+      bottom: 0;
+      left: 42%;
+    }
+  }
+
+  #noDataContainer {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
