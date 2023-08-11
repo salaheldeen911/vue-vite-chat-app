@@ -8,8 +8,6 @@ import Register from "../views/Register.vue";
 import Todo from "../views/Todo.vue";
 import chatTest from "../views/ChatTest.vue";
 
-// import About from "@/views/About.vue";
-
 const routes = [
   {
     path: "/",
@@ -61,30 +59,22 @@ const middleware = (to, from, next) => {
       .here((users) => {
         //returnning all users but the current
         OnlineUsers.base(users);
-        // console.log("here", users);
-        // this.$emit("setUsers", users);
       })
       .joining((user) => {
         //adding the juiond user th users
         OnlineUsers.joined(user);
-
-        // console.log("joining", user);
-        // this.$emit("userJoined", user);
       })
       .leaving((user) => {
         // removing the left user from users
         OnlineUsers.left(user);
-
-        // console.log("leaving", user);
-        // this.$emit("leftUser", user);
       })
       .error((error) => {
         console.log(error);
-      })
-      .listen("MessageEvent", (message) => {
-        console.log("message", message.message);
-        // this.data.push(message.message);
       });
+    // .listen("MessageEvent", (message) => {
+    //   console.log("message", message.message);
+    //   // this.data.push(message.message);
+    // });
 
     if (to.name == "login" || to.name == "register") return next("/");
     // checkEcho();
