@@ -45,13 +45,6 @@ export default {
   },
   async mounted() {
     const auth = AuthStore();
-    window.Echo.private(`friend-request-channel.${auth.user.id}`).listen(
-      "FriendRquestEvent",
-      (e) => {
-        console.log("Friend Rquest Has Been Sent");
-        // console.log(e);
-      }
-    );
   },
   data() {
     return {

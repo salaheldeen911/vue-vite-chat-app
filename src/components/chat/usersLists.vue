@@ -119,17 +119,13 @@ export default {
     try {
       let chats = await axios.get("chats");
       this.chats = chats.data.chats;
-      console.log("chats", chats);
     } catch (error) {
       console.log(error);
     }
     try {
       let users = await axios.get("users/10");
       this.users = users.data.users;
-      console.log("users", users);
     } catch (error) {
-      console.log("error");
-
       console.log(error);
     }
   },
@@ -138,7 +134,6 @@ export default {
       this.onlineUsers = users.filter((u) => u.id != this.auth.user.id);
     },
     async sendRquest(id) {
-      console.log(id);
       try {
         axios.post("chatRequest", { to: id });
       } catch (error) {
@@ -155,7 +150,6 @@ export default {
     },
     addUser(user) {
       this.onlineUsers.push(user);
-      console.log(this.onlineUsers);
     },
     showUsers() {
       this.$refs.usersLists.classList.add("show-users-lists");

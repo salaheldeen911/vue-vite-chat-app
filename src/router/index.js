@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { AuthStore } from "../stores/AuthStore";
+import { OnlineUsersStore } from "../stores/OnlineUsersStore";
 import Home from "../views/Home.vue";
 import Chat from "../views/Chat.vue";
 import Login from "../views/Login.vue";
@@ -54,6 +55,37 @@ const middleware = (to, from, next) => {
 
     return next("/login");
   } else {
+    const OnlineUsers = OnlineUsersStore();
+
+    window.Echo.join("public-chat")
+      .here((users) => {
+        //returnning all users but the current
+        OnlineUsers.base(users);
+        // console.log("here", users);
+        // this.$emit("setUsers", users);
+      })
+      .joining((user) => {
+        //adding the juiond user th users
+        OnlineUsers.joined(user);
+
+        // console.log("joining", user);
+        // this.$emit("userJoined", user);
+      })
+      .leaving((user) => {
+        // removing the left user from users
+        OnlineUsers.left(user);
+
+        // console.log("leaving", user);
+        // this.$emit("leftUser", user);
+      })
+      .error((error) => {
+        console.log(error);
+      })
+      .listen("MessageEvent", (message) => {
+        console.log("message", message.message);
+        // this.data.push(message.message);
+      });
+
     if (to.name == "login" || to.name == "register") return next("/");
     // checkEcho();
 

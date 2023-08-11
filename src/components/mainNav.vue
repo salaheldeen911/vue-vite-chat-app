@@ -144,6 +144,8 @@ export default {
       try {
         axios.post("logout");
         this.auth.$reset();
+        console.log("logedout", "left");
+        window.Echo.leave("public-chat");
         this.$router.push({ path: "/login", replace: true });
         this.clicked = false;
 
@@ -163,7 +165,7 @@ export default {
       if (window.innerWidth < 992) {
         this.$refs.toggler.click();
       }
-      console.log("D:");
+
       this.$emit("showReceivedRequests");
     },
   },

@@ -59,7 +59,7 @@ export default {
     try {
       let users = await axios.get("users/10");
       this.users = users.data.users;
-      console.log("users", users);
+      // console.log("users", users);
     } catch (error) {
       console.log("error", error);
     }

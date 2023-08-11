@@ -107,25 +107,25 @@ export default {
     // await this.getData();
     const auth = AuthStore();
 
-    window.Echo.join("public-chat")
-      .here((users) => {
-        //returnning all users but the current
-        this.$emit("setUsers", users);
-      })
-      .joining((user) => {
-        //adding the juiond user th users
-        this.$emit("userJoined", user);
-      })
-      .leaving((user) => {
-        // removing the left user from users
-        this.$emit("leftUser", user);
-      })
-      .error((error) => {
-        console.log(error);
-      })
-      .listen("MessageEvent", (message) => {
-        this.data.push(message.message);
-      });
+    // window.Echo.join("public-chat")
+    //   .here((users) => {
+    //     //returnning all users but the current
+    //     this.$emit("setUsers", users);
+    //   })
+    //   .joining((user) => {
+    //     //adding the juiond user th users
+    //     this.$emit("userJoined", user);
+    //   })
+    //   .leaving((user) => {
+    //     // removing the left user from users
+    //     this.$emit("leftUser", user);
+    //   })
+    //   .error((error) => {
+    //     console.log(error);
+    //   })
+    //   .listen("MessageEvent", (message) => {
+    //     this.data.push(message.message);
+    //   });
   },
 
   beforeUnmount() {

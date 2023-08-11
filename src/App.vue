@@ -7,8 +7,8 @@
       />
     </header>
     <main>
-      <SentRequests ref="SentRequestsComponent" />
-      <ReceivedRequests ref="ReceivedRequestsComponent" />
+      <SentRequests v-if="auth.status" ref="SentRequestsComponent" />
+      <ReceivedRequests v-if="auth.status" ref="ReceivedRequestsComponent" />
       <router-view />
     </main>
     <footer></footer>
@@ -19,7 +19,7 @@ import "./assets/icons/css/materialdesignicons.min.css";
 import mainNav from "./components/mainNav.vue";
 import SentRequests from "./components/requests/SentRequests.vue";
 import ReceivedRequests from "./components/requests/ReceivedRequests.vue";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 
 import { AuthStore } from "./stores/AuthStore";
 import Echo from "laravel-echo";
@@ -45,39 +45,48 @@ if (auth.status) {
       },
     });
   }
+  // onMounted(() => {
+  // window.Echo.join("public-chat")
+  //   .here((users) => {
+  //     //returnning all users but the current
+  //     console.log("here", users);
+  //     // this.$emit("setUsers", users);
+  //   })
+  //   .joining((user) => {
+  //     //adding the juiond user th users
+  //     console.log("joining", user);
+  //     // this.$emit("userJoined", user);
+  //   })
+  //   .leaving((user) => {
+  //     // removing the left user from users
+  //     console.log("leaving", user);
+  //     // this.$emit("leftUser", user);
+  //   })
+  //   .error((error) => {
+  //     console.log(error);
+  //   })
+  //   .listen("MessageEvent", (message) => {
+  //     console.log("message", message.message);
+  //     this.data.push(message.message);
+  //   });
+
+  window.Echo.private(`friend-request-channel.${auth.user.id}`).listen(
+    "FriendRquestEvent",
+    (e) => {
+      console.log("Friend Rquest Has Been Sent");
+      // console.log(e);
+    }
+  );
+  // });
 }
 
 function showSentRequests() {
   SentRequestsComponent.value.toggle();
-
-  console.log("D:d");
 }
 
 function showReceivedRequests() {
   ReceivedRequestsComponent.value.toggle();
-
-  console.log("D:d");
 }
-
-// window.Echo.join("public-chat")
-//   .here((users) => {
-//     //returnning all users but the current
-//     this.$emit("setUsers", users);
-//   })
-//   .joining((user) => {
-//     //adding the juiond user th users
-//     this.$emit("userJoined", user);
-//   })
-//   .leaving((user) => {
-//     // removing the left user from users
-//     this.$emit("leftUser", user);
-//   })
-//   .error((error) => {
-//     console.log(error);
-//   })
-//   .listen("MessageEvent", (message) => {
-//     this.data.push(message.message);
-//   });
 </script>
 
 
