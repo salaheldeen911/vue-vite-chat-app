@@ -28,57 +28,36 @@ const auth = AuthStore();
 const SentRequestsComponent = ref(null);
 const ReceivedRequestsComponent = ref(null);
 
-if (auth.status) {
-  if (!window.Echo) {
-    window.Echo = new Echo({
-      broadcaster: "pusher",
-      key: "pusher_key",
-      wsHost: window.location.hostname,
-      wsPort: 6001,
-      forceTLS: false,
-      disableStats: true,
-      authEndpoint: "http://localhost:8000/api/broadcasting/auth",
-      auth: {
-        headers: {
-          Authorization: auth.token(),
-        },
-      },
-    });
-  }
-  // onMounted(() => {
-  // window.Echo.join("public-chat")
-  //   .here((users) => {
-  //     //returnning all users but the current
-  //     console.log("here", users);
-  //     // this.$emit("setUsers", users);
-  //   })
-  //   .joining((user) => {
-  //     //adding the juiond user th users
-  //     console.log("joining", user);
-  //     // this.$emit("userJoined", user);
-  //   })
-  //   .leaving((user) => {
-  //     // removing the left user from users
-  //     console.log("leaving", user);
-  //     // this.$emit("leftUser", user);
-  //   })
-  //   .error((error) => {
-  //     console.log(error);
-  //   })
-  //   .listen("MessageEvent", (message) => {
-  //     console.log("message", message.message);
-  //     this.data.push(message.message);
-  //   });
+// function difineLaravelEcho() {
+//   if (auth.status) {
+//     console.log("Dstatus ok");
+//     if (!window.Echo) {
+//       console.log(auth.token());
+//       window.Echo = new Echo({
+//         broadcaster: "pusher",
+//         key: "pusher_key",
+//         wsHost: window.location.hostname,
+//         wsPort: 6001,
+//         forceTLS: false,
+//         disableStats: true,
+//         authEndpoint: "http://localhost:8000/api/broadcasting/auth",
+//         auth: {
+//           headers: {
+//             Authorization: auth.token(),
+//           },
+//         },
+//       });
+//     }
 
-  window.Echo.private(`friend-request-channel.${auth.user.id}`).listen(
-    "FriendRquestEvent",
-    (e) => {
-      console.log("Friend Rquest Has Been Sent");
-      // console.log(e);
-    }
-  );
-  // });
-}
+//     window.Echo.private(`friend-request-channel.${auth.user.id}`).listen(
+//       "FriendRquestEvent",
+//       (e) => {
+//         console.log("Friend Rquest Has Been Sent");
+//       }
+//     );
+//     // });
+//   }
+// }
 
 function showSentRequests() {
   SentRequestsComponent.value.toggle();

@@ -37,9 +37,10 @@ import { onMounted, watch, ref } from "vue";
 const OnlineStore = OnlineUsersStore();
 const { onlineUsers } = storeToRefs(OnlineUsersStore);
 const chats = ref([]);
+const emit = defineEmits(["openchat"]);
 
 function openChat(id) {
-  this.$emit("openChat", id);
+  emit("openChat", id);
 }
 
 async function get() {

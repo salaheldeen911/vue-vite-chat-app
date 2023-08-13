@@ -53,12 +53,13 @@
 <script>
 import axios from "axios";
 import { AuthStore } from "../stores/AuthStore";
+import echo from "../echo";
 
 export default {
-  // setup() {
-  //   const auth = AuthStore();
-  //   return { auth };
-  // },
+  setup() {
+    const auth = AuthStore();
+    return { auth };
+  },
   data() {
     return {
       data: {
@@ -81,6 +82,7 @@ export default {
             "Authorization"
           ] = `Bearer ${response.data.token}`;
           this.auth.setData(response.data.user, response.data.token);
+          initLaravelEcho();
           this.$router.push({ path: "/", replace: true });
           this.submiting = false;
           return true;

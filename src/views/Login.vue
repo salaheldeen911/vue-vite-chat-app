@@ -42,11 +42,16 @@
 <script>
 import axios from "axios";
 import { AuthStore } from "../stores/AuthStore";
+// import Echo from "laravel-echo";
+import { OnlineUsersStore } from "../stores/OnlineUsersStore";
+import echo from "../echo";
 
 export default {
   setup() {
     const auth = AuthStore();
-    return { auth };
+    const OnlineUsers = OnlineUsersStore();
+
+    return { auth, OnlineUsers };
   },
   data() {
     return {
@@ -68,6 +73,7 @@ export default {
             "Authorization"
           ] = `Bearer ${response.data.token}`;
           this.auth.setData(response.data.user, response.data.token);
+          echo.initLaravelEcho();
           this.$router.push({ path: "/", replace: true });
           this.submiting = false;
           return true;
@@ -80,11 +86,11 @@ export default {
         console.log(errors);
         this.submiting = false;
 
-        if (errors.response.data) {
-          this.errorMessage = errors.response.data.message;
+        // if (errors.response.data) {
+        //   this.errorMessage = errors.response.data.message;
 
-          return false;
-        }
+        //   return false;
+        // }
         this.errorMessage =
           "Something went wrong !!. You may check the server.";
       }
