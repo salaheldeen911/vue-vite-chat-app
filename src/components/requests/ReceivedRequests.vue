@@ -6,7 +6,7 @@
     class="requests"
     ref="receivedRequests"
   >
-    <h5 class="text-center">received Requests</h5>
+    <h5 class="text-center">Received Requests</h5>
     <hr />
 
     <div
@@ -86,7 +86,6 @@ export default {
     async accept(user) {
       try {
         let res = await axios.post("acceptRequest", user);
-        console.log("D:", res);
       } catch (error) {
         console.log(error);
       }
@@ -99,7 +98,6 @@ export default {
       this.status = !this.status;
     },
     handleFocusOut() {
-      console.log("D:");
       this.status = false;
     },
   },

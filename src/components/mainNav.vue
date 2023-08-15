@@ -2,7 +2,7 @@
   <nav class="navbar navbar-expand-lg navbar-dark p-3 bg-danger" id="headerNav">
     <div class="container-fluid">
       <a class="navbar-brand d-block d-lg-none" href="#">
-        <img src="/static_files/images/logos/logo_2_white.png" height="80" />
+        <img src="/vite.svg" height="80" />
       </a>
       <button
         ref="toggler"
@@ -70,10 +70,7 @@
           <li class="nav-item d-none d-lg-block">
             <router-link v-if="auth.status" class="nav-link mx-2" to="/">
               <div style="width: 100px; height: 40px">
-                <img
-                  style="width: 100%; height: 100%"
-                  src="../../public/s.png"
-                />
+                <img style="width: 100%; height: 100%" src="/vite.svg" />
               </div>
             </router-link>
           </li>
@@ -90,7 +87,7 @@
               >Chat</router-link
             >
           </li>
-          <li class="nav-item">
+          <li class="nav-item position-relative">
             <a
               v-if="auth.status"
               href=" javascript:void(0)"
@@ -98,6 +95,11 @@
               @click="showReceivedRequests"
               class="nav-link mx-2"
               >Received Requests</a
+            >
+            <span
+              v-if="unreadedReceivedRequestsCount > 0"
+              class="unreadedReceivedRequestsCount"
+              >{{ unreadedReceivedRequestsCount }}</span
             >
           </li>
           <li class="nav-item">
@@ -121,6 +123,7 @@ import axios from "axios";
 import { AuthStore } from "../stores/AuthStore";
 import SentRequests from "./requests/SentRequests.vue";
 import ReceivedRequests from "./requests/ReceivedRequests.vue";
+import Echo from "laravel-echo";
 
 export default {
   name: "mainNav",
@@ -131,11 +134,24 @@ export default {
   components: { SentRequests, ReceivedRequests },
 
   mounted() {
-    axios.defaults.headers.common["Authorization"] = this.auth.token(); // `Bearer ${this.auth.token()}`;
+    this.init();
+    this.getUnreadedReceivedRequestsCount();
+
+    window.Echo.private(`friend-request-channel.${this.auth.user.id}`)
+      .listen("FriendRquestEvent", (e) => {
+        this.getUnreadedReceivedRequestsCount();
+        this.$emit("updateReseivedRequests", e);
+      })
+      .error((error) => {
+        console.log(error);
+      });
+
+    // axios.defaults.headers.common["Authorization"] = this.auth.token(); // `Bearer ${this.auth.token()}`;
   },
   data() {
     return {
       clicked: false,
+      unreadedReceivedRequestsCount: 0,
     };
   },
   methods: {
@@ -144,7 +160,6 @@ export default {
       try {
         axios.post("logout");
         this.auth.$reset();
-        console.log("logedout", "left");
         window.Echo.leave("public-chat");
         this.$router.push({ path: "/login", replace: true });
         this.clicked = false;
@@ -161,19 +176,73 @@ export default {
       }
       this.$emit("showSentRequests");
     },
-    showReceivedRequests() {
+    async showReceivedRequests() {
+      try {
+        this.$emit("showReceivedRequests");
+
+        await axios.put("readAllReceivedRequests");
+        this.getUnreadedReceivedRequestsCount();
+      } catch (errors) {
+        console.log(errors);
+      }
+
       if (window.innerWidth < 992) {
         this.$refs.toggler.click();
       }
+    },
+    async getUnreadedReceivedRequestsCount() {
+      try {
+        let count = await axios.get("unreadedReceivedRequestsCount", {
+          headers: {
+            Authorization: this.auth.token(),
+          },
+        });
+        this.unreadedReceivedRequestsCount = count.data.count;
 
-      this.$emit("showReceivedRequests");
+        return true;
+      } catch (errors) {
+        console.log(errors);
+        this.clicked = false;
+      }
+    },
+    init() {
+      window.Echo = new Echo({
+        broadcaster: "pusher",
+        key: "pusher_key",
+        wsHost: window.location.hostname,
+        wsPort: 6001,
+        forceTLS: false,
+        disableStats: true,
+        authEndpoint: "http://localhost:8000/api/broadcasting/auth",
+        auth: {
+          headers: {
+            Authorization: this.auth.token(),
+          },
+        },
+      });
     },
   },
 };
 </script>
 
-<style>
+<style scoped>
 .router-link-active {
   color: #fff !important;
+}
+
+.unreadedReceivedRequestsCount {
+  position: absolute;
+  top: -2px;
+  left: -6px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px;
+  background: aliceblue;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

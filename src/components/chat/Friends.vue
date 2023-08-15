@@ -36,6 +36,7 @@ import { onMounted, watch, ref } from "vue";
 
 const OnlineStore = OnlineUsersStore();
 const { onlineUsers } = storeToRefs(OnlineUsersStore);
+
 const chats = ref([]);
 const emit = defineEmits(["openchat"]);
 
@@ -49,7 +50,6 @@ async function get() {
 }
 
 onMounted(async () => {
-  console.log("hi here");
   try {
     chats.value = await get();
     if (chats.value.length > 0) {
@@ -86,7 +86,6 @@ function showOnlineFriends() {
 watch(
   () => OnlineStore.onlineUsers,
   () => {
-    console.log("isLoggedIn state changed, do something!", this);
     showOnlineFriends();
   },
   { deep: true }

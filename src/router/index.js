@@ -6,18 +6,12 @@ import Chat from "../views/Chat.vue";
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
 import Todo from "../views/Todo.vue";
-import chatTest from "../views/ChatTest.vue";
 
 const routes = [
   {
     path: "/",
     name: "home",
     component: Home,
-  },
-  {
-    path: "/test",
-    name: "chatTest",
-    component: chatTest,
   },
   {
     path: "/chat",
@@ -48,7 +42,7 @@ const middleware = (to, from, next) => {
 
     return next("/login");
   } else {
-    if (!window.Echo) echo.initLaravelEcho();
+    if (!window.Echo) echo.initLaravelEcho(auth);
 
     if (to.name == "login" || to.name == "register") return next("/");
 

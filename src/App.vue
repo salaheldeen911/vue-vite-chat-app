@@ -4,12 +4,13 @@
       <mainNav
         @showSentRequests="showSentRequests"
         @showReceivedRequests="showReceivedRequests"
+        @updateReseivedRequests="updateReseivedRequests"
       />
     </header>
     <main>
       <SentRequests v-if="auth.status" ref="SentRequestsComponent" />
       <ReceivedRequests v-if="auth.status" ref="ReceivedRequestsComponent" />
-      <router-view />
+      <router-view @sentRequest="sentRequest" />
     </main>
     <footer></footer>
   </div>
@@ -28,36 +29,15 @@ const auth = AuthStore();
 const SentRequestsComponent = ref(null);
 const ReceivedRequestsComponent = ref(null);
 
-// function difineLaravelEcho() {
-//   if (auth.status) {
-//     console.log("Dstatus ok");
-//     if (!window.Echo) {
-//       console.log(auth.token());
-//       window.Echo = new Echo({
-//         broadcaster: "pusher",
-//         key: "pusher_key",
-//         wsHost: window.location.hostname,
-//         wsPort: 6001,
-//         forceTLS: false,
-//         disableStats: true,
-//         authEndpoint: "http://localhost:8000/api/broadcasting/auth",
-//         auth: {
-//           headers: {
-//             Authorization: auth.token(),
-//           },
-//         },
-//       });
-//     }
+const keyIndex = ref(0);
 
-//     window.Echo.private(`friend-request-channel.${auth.user.id}`).listen(
-//       "FriendRquestEvent",
-//       (e) => {
-//         console.log("Friend Rquest Has Been Sent");
-//       }
-//     );
-//     // });
-//   }
-// }
+function updateReseivedRequests() {
+  ReceivedRequestsComponent.value.getReceivedRequests();
+}
+
+function sentRequest() {
+  SentRequestsComponent.value.getSentRequests();
+}
 
 function showSentRequests() {
   SentRequestsComponent.value.toggle();

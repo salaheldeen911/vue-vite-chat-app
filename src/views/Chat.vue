@@ -8,7 +8,7 @@
           class="mdi mdi-chevron-double-right"
         ></span>
       </div>
-      <not-friends />
+      <not-friends @sentRequest="sentRequest" />
       <friends @openChat="openChat" ref="friends" />
       <div @click="hideUsers()" class="hideBtn none" ref="arrowHide">
         <span
@@ -18,54 +18,20 @@
         ></span>
       </div>
     </div>
-    <!-- <Users @openChat="openChat" ref="usersLists" /> -->
-    <mainChat
-      ref="mainChat"
-      @userJoined="userJoined"
-      @setUsers="setUsers"
-      @leftUser="leftUser"
-    />
+    <mainChat ref="mainChat" />
   </div>
 </template>
 
 <script>
-import { AuthStore } from "../stores/AuthStore";
-import Echo from "laravel-echo";
-import Users from "../components/chat/usersLists.vue";
-import mainChat from "../components/chat/mainChat.vue";
-import axios from "axios";
+import mainChat from "../components/chat/main/mainChat.vue";
 import NotFriends from "../components/chat/NotFriends.vue";
 import Friends from "../components/chat/Friends.vue";
 
 export default {
-  components: { Users, mainChat, NotFriends, Friends },
-  setup() {
-    const auth = AuthStore();
-    return { auth };
-  },
-  async mounted() {
-    const auth = AuthStore();
-  },
-  data() {
-    return {
-      data: [],
-    };
-  },
+  components: { mainChat, NotFriends, Friends },
   methods: {
-    setUsers(users) {
-      this.$refs.friends.setUsers(users);
-    },
-    userJoined(user) {
-      this.$refs.friends.addUser(user);
-    },
-    leftUser(user) {
-      this.$refs.friends.removeUser(user);
-    },
     openChat(id) {
-      // console.log("refs", this.$refs);
       this.$refs.mainChat.openPrivateChat(id);
-
-      // console.log(id);
     },
     showUsers() {
       this.$refs.friends.classList.add("show-users-lists");
@@ -77,10 +43,9 @@ export default {
       this.$refs.arrowShow.classList.remove("hide", "disabled");
       this.$refs.arrowHide.classList.remove("flex");
     },
+    sentRequest() {
+      this.$emit("sentRequest");
+    },
   },
-  /* TODO:: APPLY FOR FRONT END */
 };
 </script>
-
-<style lang="scss">
-</style>

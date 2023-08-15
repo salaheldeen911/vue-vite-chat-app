@@ -47,6 +47,7 @@ import { AuthStore } from "../../stores/AuthStore";
 export default {
   setup() {
     const auth = AuthStore();
+
     return { auth };
   },
   data() {
@@ -60,6 +61,7 @@ export default {
 
     await this.getSentRequests();
   },
+
   methods: {
     async getSentRequests() {
       try {
@@ -78,7 +80,6 @@ export default {
     },
 
     handleFocusOut() {
-      console.log("D:");
       this.status = false;
     },
   },

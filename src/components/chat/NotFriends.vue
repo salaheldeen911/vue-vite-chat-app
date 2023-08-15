@@ -14,7 +14,7 @@
     <div class="users-list-body">
       <ul class="list-unstyled chat-list mt-2 mb-0">
         <li
-          @click.exact="showRequest($event)"
+          @click.exact="this.sendRequest(user)"
           v-for="user in users"
           :key="user.id"
           class="user mb-2"
@@ -30,7 +30,7 @@
             </div>
           </div>
           <button
-            @click="this.sendRquest(user.id)"
+            @click="this.sendRequest(user)"
             class="btn btn-primary request-btn"
             style="z-index: 9999"
           >
@@ -59,15 +59,15 @@ export default {
     try {
       let users = await axios.get("users/10");
       this.users = users.data.users;
-      // console.log("users", users);
     } catch (error) {
       console.log("error", error);
     }
   },
   methods: {
-    showRequest(e) {
-      if (e.target.tagName == "LI") {
-        e.target.querySelectorAll(".request-btn")[0].classList.toggle("active");
+    async sendRequest(user) {
+      if (confirm("DO you want to send a friend request to " + user.name)) {
+        let r = await axios.post("friendRequest", user);
+        this.$emit("sentRequest");
       }
     },
   },

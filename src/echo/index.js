@@ -1,14 +1,11 @@
-import { AuthStore } from "../stores/AuthStore";
 import Echo from "laravel-echo";
 import { OnlineUsersStore } from "../stores/OnlineUsersStore";
 
-function initLaravelEcho() {
-  const auth = AuthStore();
-
+function initLaravelEcho(auth) {
   if (auth.status) {
     init(auth);
     joinPublicChat();
-    listenToFriendRequests(auth);
+    // listenToFriendRequests(auth);
   }
 }
 
@@ -44,16 +41,6 @@ function joinPublicChat() {
     .leaving((user) => {
       // removing the left user from users
       OnlineUsers.left(user);
-    })
-    .error((error) => {
-      console.log(error);
-    });
-}
-
-function listenToFriendRequests(auth) {
-  window.Echo.private(`friend-request-channel.${auth.user.id}`)
-    .listen("FriendRquestEvent", (e) => {
-      console.log("Friend Rquest Has Been Sent", e);
     })
     .error((error) => {
       console.log(error);

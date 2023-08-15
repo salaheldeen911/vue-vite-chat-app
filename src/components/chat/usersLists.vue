@@ -111,10 +111,6 @@ export default {
     };
   },
   watch: {
-    onlineUsers() {
-      console.log("online", this.onlineUsers);
-    },
-  },
   async mounted() {
     try {
       let chats = await axios.get("chats");
