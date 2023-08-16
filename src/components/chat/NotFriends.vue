@@ -67,6 +67,7 @@ export default {
     async sendRequest(user) {
       if (confirm("DO you want to send a friend request to " + user.name)) {
         let r = await axios.post("friendRequest", user);
+        console.log(r);
         this.$emit("sentRequest");
       }
     },

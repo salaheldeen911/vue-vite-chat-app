@@ -42,7 +42,7 @@ const middleware = (to, from, next) => {
 
     return next("/login");
   } else {
-    if (!window.Echo) echo.initLaravelEcho(auth);
+    if (!window.Echo) echo.initLaravelEcho();
 
     if (to.name == "login" || to.name == "register") return next("/");
 

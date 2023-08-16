@@ -23,44 +23,19 @@
         >.
       </p>
     </div>
-    <div
-      v-for="request in receivedRequests"
-      :key="request.id"
-      class="alert alert-primary"
-      role="alert"
-    >
-      <p>
-        {{ request.name }} has sent you a friend request and his phone number is
-        <strong> 01273542801</strong>. You can
-        <strong><a href="#" class="alert-link">Accept</a></strong> or yoe can
-        <strong><a href="#" class="alert-link">Deny it</a></strong
-        >.
-      </p>
-    </div>
-    <div
-      v-for="request in receivedRequests"
-      :key="request.id"
-      class="alert alert-primary"
-      role="alert"
-    >
-      <p>
-        {{ request.name }} has sent you a friend request and his phone number is
-        <strong> 01273542801</strong>. You can
-        <strong><a href="#" class="alert-link">Accept</a></strong> or yoe can
-        <strong><a href="#" class="alert-link">Deny it</a></strong
-        >.
-      </p>
-    </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import { AuthStore } from "../../stores/AuthStore";
+import echo from "../../echo";
+// import Echo from "laravel-echo";
 
 export default {
   setup() {
     const auth = AuthStore();
+
     return { auth };
   },
   data() {
@@ -71,21 +46,33 @@ export default {
   },
   async mounted() {
     axios.defaults.headers.common["Authorization"] = this.auth.token(); // `Bearer ${this.auth.token()}`;
+    if (!window.Echo) echo.initLaravelEcho();
 
+    window.Echo.private(`cancel-friend-request-channel.${this.auth.user.id}`)
+      .listen("CancelFriendRquestEvent", (e) => {
+        this.getReceivedRequests();
+        this.$emit("requestHasBeenCanceled");
+
+        console.log("event", e);
+      })
+      .error((error) => {
+        console.log(error);
+      });
     await this.getReceivedRequests();
   },
   methods: {
     async getReceivedRequests() {
       try {
         let res = await axios.get("receivedRequests");
-        this.receivedRequests = res.data.receivedRequests;
+        this.receivedRequests = res.data.data;
       } catch (error) {
         console.log(error);
       }
     },
     async accept(user) {
       try {
-        let res = await axios.post("acceptRequest", user);
+        await axios.post("acceptRequest", user);
+        await this.getReceivedRequests();
       } catch (error) {
         console.log(error);
       }

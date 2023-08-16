@@ -1,11 +1,13 @@
 import Echo from "laravel-echo";
 import { OnlineUsersStore } from "../stores/OnlineUsersStore";
+import { AuthStore } from "../stores/AuthStore";
 
-function initLaravelEcho(auth) {
+function initLaravelEcho() {
+  const auth = AuthStore();
+
   if (auth.status) {
     init(auth);
     joinPublicChat();
-    // listenToFriendRequests(auth);
   }
 }
 

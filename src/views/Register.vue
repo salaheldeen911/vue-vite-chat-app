@@ -82,7 +82,7 @@ export default {
             "Authorization"
           ] = `Bearer ${response.data.token}`;
           this.auth.setData(response.data.user, response.data.token);
-          initLaravelEcho();
+          echo.initLaravelEcho();
           this.$router.push({ path: "/", replace: true });
           this.submiting = false;
           return true;

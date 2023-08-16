@@ -19,26 +19,6 @@
 
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav mx-auto" style="align-items: center">
-          <!-- <li v-if="auth.status" class="nav-item dropdown">
-            <a
-              class="nav-link mx-2 dropdown-toggle"
-              href="#"
-              id="navbarDropdownMenuLink"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Sent Requests
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-              <SentRequests />
-
-              <li><a class="dropdown-item" href="#">Blog</a></li>
-              <li><a class="dropdown-item" href="#">About Us</a></li>
-              <li><a class="dropdown-item" href="#">Contact us</a></li>
-            </ul>
-          </li> -->
-
           <li class="nav-item">
             <a
               v-if="auth.status"
@@ -123,7 +103,8 @@ import axios from "axios";
 import { AuthStore } from "../stores/AuthStore";
 import SentRequests from "./requests/SentRequests.vue";
 import ReceivedRequests from "./requests/ReceivedRequests.vue";
-import Echo from "laravel-echo";
+// import Echo from "laravel-echo";
+import echo from "../echo";
 
 export default {
   name: "mainNav",
@@ -134,19 +115,23 @@ export default {
   components: { SentRequests, ReceivedRequests },
 
   mounted() {
-    this.init();
+    console.log("mounted");
+
     this.getUnreadedReceivedRequestsCount();
+    if (this.auth.status) {
+      if (!window.Echo) echo.initLaravelEcho();
+    }
+    console.log("this.auth.user.id", this.auth.user.id);
 
     window.Echo.private(`friend-request-channel.${this.auth.user.id}`)
       .listen("FriendRquestEvent", (e) => {
         this.getUnreadedReceivedRequestsCount();
-        this.$emit("updateReseivedRequests", e);
+        this.$emit("updateReseivedRequests");
+        console.log("event", e);
       })
       .error((error) => {
         console.log(error);
       });
-
-    // axios.defaults.headers.common["Authorization"] = this.auth.token(); // `Bearer ${this.auth.token()}`;
   },
   data() {
     return {
@@ -197,7 +182,9 @@ export default {
             Authorization: this.auth.token(),
           },
         });
-        this.unreadedReceivedRequestsCount = count.data.count;
+        console.log(count);
+        this.unreadedReceivedRequestsCount = count.data.data.count;
+        console.log(this.unreadedReceivedRequestsCount);
 
         return true;
       } catch (errors) {
@@ -205,22 +192,22 @@ export default {
         this.clicked = false;
       }
     },
-    init() {
-      window.Echo = new Echo({
-        broadcaster: "pusher",
-        key: "pusher_key",
-        wsHost: window.location.hostname,
-        wsPort: 6001,
-        forceTLS: false,
-        disableStats: true,
-        authEndpoint: "http://localhost:8000/api/broadcasting/auth",
-        auth: {
-          headers: {
-            Authorization: this.auth.token(),
-          },
-        },
-      });
-    },
+    // initEcho() {
+    //   window.Echo = new Echo({
+    //     broadcaster: "pusher",
+    //     key: "pusher_key",
+    //     wsHost: window.location.hostname,
+    //     wsPort: 6001,
+    //     forceTLS: false,
+    //     disableStats: true,
+    //     authEndpoint: "http://localhost:8000/api/broadcasting/auth",
+    //     auth: {
+    //       headers: {
+    //         Authorization: this.auth.token(),
+    //       },
+    //     },
+    //   });
+    // },
   },
 };
 </script>

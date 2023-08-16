@@ -2,6 +2,7 @@
   <div id="site-container">
     <header>
       <mainNav
+        ref="mainNavComponent"
         @showSentRequests="showSentRequests"
         @showReceivedRequests="showReceivedRequests"
         @updateReseivedRequests="updateReseivedRequests"
@@ -9,7 +10,11 @@
     </header>
     <main>
       <SentRequests v-if="auth.status" ref="SentRequestsComponent" />
-      <ReceivedRequests v-if="auth.status" ref="ReceivedRequestsComponent" />
+      <ReceivedRequests
+        @requestHasBeenCanceled="updateReceivedRequests"
+        v-if="auth.status"
+        ref="ReceivedRequestsComponent"
+      />
       <router-view @sentRequest="sentRequest" />
     </main>
     <footer></footer>
@@ -28,6 +33,7 @@ import Echo from "laravel-echo";
 const auth = AuthStore();
 const SentRequestsComponent = ref(null);
 const ReceivedRequestsComponent = ref(null);
+const mainNavComponent = ref(null);
 
 const keyIndex = ref(0);
 
@@ -45,6 +51,11 @@ function showSentRequests() {
 
 function showReceivedRequests() {
   ReceivedRequestsComponent.value.toggle();
+}
+
+function updateReceivedRequests() {
+  ReceivedRequestsComponent.value.getReceivedRequests();
+  mainNavComponent.value.getUnreadedReceivedRequestsCount();
 }
 </script>
 

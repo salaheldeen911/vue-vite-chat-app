@@ -16,25 +16,17 @@
       role="alert"
     >
       <p>
-        {{ request.name }} has sent you a friend request and his phone number is
-        <strong> 01273542801</strong>. You can
-        <strong><a href="#" class="alert-link">Accept</a></strong> or yoe can
-        <strong><a href="#" class="alert-link">Deny it</a></strong
-        >.
-      </p>
-    </div>
-    <div
-      v-for="request in sentRequests"
-      :key="request.id"
-      class="alert alert-primary"
-      role="alert"
-    >
-      <p>
-        {{ request.name }} has sent you a friend request and his phone number is
-        <strong> 01273542801</strong>. You can
-        <strong><a href="#" class="alert-link">Accept</a></strong> or yoe can
-        <strong><a href="#" class="alert-link">Deny it</a></strong
-        >.
+        You have sent a friend request to <strong>{{ request.email }}</strong
+        >. You can
+        <strong
+          ><span
+            role="button"
+            @click="cancelRequest(request)"
+            class="alert-link"
+            >Cancel It</span
+          ></strong
+        >
+        any time.
       </p>
     </div>
   </div>
@@ -66,13 +58,20 @@ export default {
     async getSentRequests() {
       try {
         let res = await axios.get("sentRequests");
-        this.sentRequests = res.data.sentRequests;
+        this.sentRequests = res.data.data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async cancelRequest(user) {
+      try {
+        await axios.delete("cancelRequest", { data: { user: user } });
+        this.getSentRequests();
       } catch (error) {
         console.log(error);
       }
     },
     toggle() {
-      // this.$refs.email.$el.focus()
       if (!this.status) {
         this.$refs.sentRequests.focus();
       }
