@@ -11,6 +11,7 @@
     <main>
       <SentRequests v-if="auth.status" ref="SentRequestsComponent" />
       <ReceivedRequests
+        @requestHasBeenAccepted="requestHasBeenAccepted"
         @requestHasBeenCanceled="updateReceivedRequests"
         v-if="auth.status"
         ref="ReceivedRequestsComponent"
@@ -39,6 +40,10 @@ const keyIndex = ref(0);
 
 function updateReseivedRequests() {
   ReceivedRequestsComponent.value.getReceivedRequests();
+}
+
+function requestHasBeenAccepted() {
+  SentRequestsComponent.value.getSentRequests();
 }
 
 function sentRequest() {

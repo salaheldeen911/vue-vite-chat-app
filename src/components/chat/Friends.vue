@@ -30,14 +30,18 @@
 
 <script setup>
 import { OnlineUsersStore } from "../../stores/OnlineUsersStore";
+import { ChatsStore } from "../../stores/ChatsStore";
 import axios from "axios";
 import { storeToRefs } from "pinia";
 import { onMounted, watch, ref } from "vue";
 
+const ChatStore = ChatsStore();
+const { chats } = storeToRefs(ChatStore);
+
 const OnlineStore = OnlineUsersStore();
 const { onlineUsers } = storeToRefs(OnlineUsersStore);
 
-const chats = ref([]);
+// const chats = ref([]);
 const emit = defineEmits(["openchat"]);
 
 function openChat(id) {
@@ -45,18 +49,14 @@ function openChat(id) {
 }
 
 async function get() {
-  let r = await axios.get("chats");
-  return r.data.chats;
+  let chats = await axios.get("chats");
+  return chats.data.chats;
 }
 
 onMounted(async () => {
   try {
-    chats.value = await get();
-    if (chats.value.length > 0) {
-      setTimeout(() => {
-        showOnlineFriends();
-      }, 1000);
-    }
+    let chats = await get();
+    ChatStore.setChats(chats);
   } catch (error) {
     console.log(error);
   }

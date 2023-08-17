@@ -68,31 +68,19 @@ export default {
       this.submiting = true;
       try {
         let response = await axios.post("login", this.data);
-        if (response.data.user && response.data.token) {
+        if (response.data.data.user && response.data.data.token) {
           axios.defaults.headers.common[
             "Authorization"
-          ] = `Bearer ${response.data.token}`;
-          this.auth.setData(response.data.user, response.data.token);
+          ] = `Bearer ${response.data.data.token}`;
+          this.auth.setData(response.data.data.user, response.data.data.token);
           echo.initLaravelEcho();
           this.$router.push({ path: "/", replace: true });
           this.submiting = false;
-          return true;
         }
-        console.error("Somthing went wrong !!");
         this.submiting = false;
-
-        return false;
       } catch (errors) {
-        console.log(errors);
+        this.errorMessage = errors.response.data.message;
         this.submiting = false;
-
-        // if (errors.response.data) {
-        //   this.errorMessage = errors.response.data.message;
-
-        //   return false;
-        // }
-        this.errorMessage =
-          "Something went wrong !!. You may check the server.";
       }
     },
   },

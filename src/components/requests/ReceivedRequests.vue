@@ -18,8 +18,12 @@
       <p>
         {{ request.name }} has sent you a friend request and his phone number is
         <strong> 01273542801</strong>. You can
-        <strong><a href="#" class="alert-link">Accept</a></strong> or yoe can
-        <strong><a href="#" class="alert-link">Deny it</a></strong
+        <strong role="button" @click="accept(request)" class="alert-link"
+          >Accept It</strong
+        >
+        or you can
+        <strong role="button" @click="ignore(request)" class="alert-link"
+          >Ignore It</strong
         >.
       </p>
     </div>
@@ -71,8 +75,19 @@ export default {
     },
     async accept(user) {
       try {
-        await axios.post("acceptRequest", user);
+        let l = await axios.post("acceptRequest", user);
         await this.getReceivedRequests();
+        this.$emit("requestHasBeenAccepted");
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async ignore(user) {
+      try {
+        let z = await axios.put("ignoreRequest", user);
+        await this.getReceivedRequests();
+        console.log(z);
+        // this.$emit("requestHasBeenAccepted");
       } catch (error) {
         console.log(error);
       }

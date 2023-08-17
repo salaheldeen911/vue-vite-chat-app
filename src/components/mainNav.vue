@@ -67,9 +67,8 @@
               >Chat</router-link
             >
           </li>
-          <li class="nav-item position-relative">
+          <li v-if="auth.status" class="nav-item position-relative">
             <a
-              v-if="auth.status"
               href=" javascript:void(0)"
               :class="{ disabled: clicked }"
               @click="showReceivedRequests"
@@ -115,23 +114,20 @@ export default {
   components: { SentRequests, ReceivedRequests },
 
   mounted() {
-    console.log("mounted");
-
-    this.getUnreadedReceivedRequestsCount();
     if (this.auth.status) {
+      this.getUnreadedReceivedRequestsCount();
       if (!window.Echo) echo.initLaravelEcho();
-    }
-    console.log("this.auth.user.id", this.auth.user.id);
 
-    window.Echo.private(`friend-request-channel.${this.auth.user.id}`)
-      .listen("FriendRquestEvent", (e) => {
-        this.getUnreadedReceivedRequestsCount();
-        this.$emit("updateReseivedRequests");
-        console.log("event", e);
-      })
-      .error((error) => {
-        console.log(error);
-      });
+      window.Echo.private(`friend-request-channel.${this.auth.user.id}`)
+        .listen("FriendRquestEvent", (e) => {
+          this.getUnreadedReceivedRequestsCount();
+          this.$emit("updateReseivedRequests");
+          console.log("event", e);
+        })
+        .error((error) => {
+          console.log(error);
+        });
+    }
   },
   data() {
     return {
@@ -182,9 +178,7 @@ export default {
             Authorization: this.auth.token(),
           },
         });
-        console.log(count);
         this.unreadedReceivedRequestsCount = count.data.data.count;
-        console.log(this.unreadedReceivedRequestsCount);
 
         return true;
       } catch (errors) {
@@ -192,22 +186,6 @@ export default {
         this.clicked = false;
       }
     },
-    // initEcho() {
-    //   window.Echo = new Echo({
-    //     broadcaster: "pusher",
-    //     key: "pusher_key",
-    //     wsHost: window.location.hostname,
-    //     wsPort: 6001,
-    //     forceTLS: false,
-    //     disableStats: true,
-    //     authEndpoint: "http://localhost:8000/api/broadcasting/auth",
-    //     auth: {
-    //       headers: {
-    //         Authorization: this.auth.token(),
-    //       },
-    //     },
-    //   });
-    // },
   },
 };
 </script>
