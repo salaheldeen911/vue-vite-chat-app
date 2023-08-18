@@ -33,14 +33,14 @@ import { OnlineUsersStore } from "../../stores/OnlineUsersStore";
 import { ChatsStore } from "../../stores/ChatsStore";
 import axios from "axios";
 import { storeToRefs } from "pinia";
-import { onMounted, watch, ref } from "vue";
+import { onMounted, watch } from "vue";
 
 const ChatStore = ChatsStore();
 const { chats } = storeToRefs(ChatStore);
 const OnlineStore = OnlineUsersStore();
 const { onlineUsers } = storeToRefs(OnlineStore);
-const emit = defineEmits(["openchat"]);
 
+const emit = defineEmits(["openchat"]);
 function openChat(id) {
   emit("openChat", id);
 }

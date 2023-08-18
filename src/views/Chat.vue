@@ -8,8 +8,8 @@
           class="mdi mdi-chevron-double-right"
         ></span>
       </div>
-      <not-friends @sentRequest="sentRequest" />
-      <friends @openChat="openChat" ref="friends" />
+      <not-friends />
+      <friends @openChat="openChat" ref="friendsComponent" />
       <div @click="hideUsers()" class="hideBtn none" ref="arrowHide">
         <span
           id="arrowHide"
@@ -18,31 +18,33 @@
         ></span>
       </div>
     </div>
-    <mainChat ref="mainChat" />
+    <mainChat ref="mainChatComponent" />
   </div>
 </template>
 
-<script>
+<script setup>
 import mainChat from "../components/chat/main/mainChat.vue";
 import NotFriends from "../components/chat/NotFriends.vue";
 import Friends from "../components/chat/Friends.vue";
+import { ref } from "vue";
 
-export default {
-  components: { mainChat, NotFriends, Friends },
-  methods: {
-    openChat(id) {
-      this.$refs.mainChat.openPrivateChat(id);
-    },
-    showUsers() {
-      this.$refs.friends.classList.add("show-users-lists");
-      this.$refs.arrowShow.classList.add("hide", "disabled");
-      this.$refs.arrowHide.classList.add("flex");
-    },
-    hideUsers() {
-      this.$refs.friends.classList.remove("show-users-lists");
-      this.$refs.arrowShow.classList.remove("hide", "disabled");
-      this.$refs.arrowHide.classList.remove("flex");
-    },
-  },
-};
+const props = defineProps(["openChat"]);
+const friendsComponent = ref(null);
+const arrowShow = ref(null);
+const arrowHide = ref(null);
+const mainChatComponent = ref(null);
+
+function openChat(id) {
+  mainChatComponent.value.openPrivateChat(id);
+}
+function showUsers() {
+  friendsComponent.value.classList.add("show-users-lists");
+  arrowShow.value.classList.add("hide", "disabled");
+  arrowHide.value.classList.add("flex");
+}
+function hideUsers() {
+  friendsComponent.value.classList.remove("show-users-lists");
+  arrowShow.value.classList.remove("hide", "disabled");
+  arrowHide.value.classList.remove("flex");
+}
 </script>
