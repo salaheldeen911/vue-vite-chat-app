@@ -37,41 +37,38 @@ import { onMounted, watch, ref } from "vue";
 
 const ChatStore = ChatsStore();
 const { chats } = storeToRefs(ChatStore);
-
 const OnlineStore = OnlineUsersStore();
-const { onlineUsers } = storeToRefs(OnlineUsersStore);
-
-// const chats = ref([]);
+const { onlineUsers } = storeToRefs(OnlineStore);
 const emit = defineEmits(["openchat"]);
 
 function openChat(id) {
   emit("openChat", id);
 }
 
-async function get() {
+async function setChats() {
   let chats = await axios.get("chats");
-  return chats.data.chats;
+  ChatStore.setChats(chats.data.chats);
 }
 
 onMounted(async () => {
   try {
-    let chats = await get();
-    ChatStore.setChats(chats);
+    await setChats();
+    showOnlineFriends(onlineUsers);
   } catch (error) {
     console.log(error);
   }
 });
 
-function getOnlineUsersIds(onlineUsers) {
+function getOnlineUsersIds() {
   let ids = [];
-  for (let onlineUser of onlineUsers) {
+  for (let onlineUser of onlineUsers.value) {
     ids.push(onlineUser.id);
   }
   return ids;
 }
 
 function showOnlineFriends() {
-  const onlineUsersIds = getOnlineUsersIds(OnlineStore.onlineUsers);
+  const onlineUsersIds = getOnlineUsersIds();
 
   for (const chat of chats.value) {
     let chatElement = document.getElementById("user-" + chat.user.id);
@@ -84,7 +81,15 @@ function showOnlineFriends() {
 }
 
 watch(
-  () => OnlineStore.onlineUsers,
+  () => onlineUsers.value,
+  () => {
+    showOnlineFriends();
+  },
+  { deep: true }
+);
+
+watch(
+  () => chats.value,
   () => {
     showOnlineFriends();
   },

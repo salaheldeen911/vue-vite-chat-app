@@ -4,35 +4,36 @@
     tabindex="0"
     :class="{ show: status }"
     class="requests"
-    ref="sentRequests"
+    ref="sentRequestsContainer"
   >
     <h5 class="text-center">Sent Requests</h5>
     <hr />
-
-    <div
-      v-for="request in sentRequests"
-      :key="request.id"
-      class="alert alert-primary"
-      role="alert"
-    >
-      <p>
-        You have sent a friend request to <strong>{{ request.email }}</strong
-        >. You can
-        <strong
-          ><span
-            role="button"
-            @click="cancelRequest(request)"
-            class="alert-link"
-            >Cancel It</span
-          ></strong
-        >
-        any time.
-      </p>
+    <div v-if="sentRequests.length > 0">
+      <div
+        v-for="request in sentRequests"
+        :key="request.id"
+        class="alert alert-primary"
+        role="alert"
+      >
+        <p>
+          You have sent a friend request to <strong>{{ request.email }}</strong
+          >. You can
+          <strong
+            ><span
+              role="button"
+              @click="cancelRequest(request)"
+              class="alert-link"
+              >Cancel It</span
+            ></strong
+          >
+          any time.
+        </p>
+      </div>
     </div>
   </div>
 </template>
 
-<script>
+<!-- <script>
 import axios from "axios";
 import { AuthStore } from "../../stores/AuthStore";
 
@@ -83,6 +84,72 @@ export default {
     },
   },
 };
+</script> -->
+
+<script setup>
+import { AuthStore } from "../../stores/AuthStore";
+import { SentRequestsStore } from "../../stores/SentRequestsStore";
+import { storeToRefs } from "pinia";
+import echo from "../../echo";
+import axios from "axios";
+import { onMounted, watch, ref } from "vue";
+
+const SentRequestStore = SentRequestsStore();
+const { sentRequests, status } = storeToRefs(SentRequestStore);
+const auth = AuthStore();
+const sentRequestsContainer = ref(null);
+
+async function getSentRequests() {
+  try {
+    let res = await axios.get("sentRequests");
+    SentRequestStore.setSentRequests(res.data.data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function cancelRequest(user) {
+  try {
+    await axios.delete("cancelRequest", { data: { user: user } });
+    getSentRequests();
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function toggle() {
+  if (status.value) sentRequestsContainer.value.focus();
+}
+
+function handleFocusOut() {
+  status.value = false;
+}
+
+onMounted(async () => {
+  axios.defaults.headers.common["Authorization"] = auth.token(); // `Bearer ${this.auth.token()}`;
+
+  await getSentRequests();
+});
+
+watch(
+  () => status.value,
+  () => {
+    toggle();
+  },
+  { deep: true }
+);
+
+watch(
+  () => sentRequests.value,
+  () => {
+    // getUsers();
+  },
+  { deep: true }
+);
+
+defineExpose({
+  toggle,
+});
 </script>
 
 <style scoped>

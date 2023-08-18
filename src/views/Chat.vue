@@ -43,9 +43,6 @@ export default {
       this.$refs.arrowShow.classList.remove("hide", "disabled");
       this.$refs.arrowHide.classList.remove("flex");
     },
-    sentRequest() {
-      this.$emit("sentRequest");
-    },
   },
 };
 </script>

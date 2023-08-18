@@ -1,22 +1,12 @@
 <template>
   <div id="site-container">
     <header>
-      <mainNav
-        ref="mainNavComponent"
-        @showSentRequests="showSentRequests"
-        @showReceivedRequests="showReceivedRequests"
-        @updateReseivedRequests="updateReseivedRequests"
-      />
+      <mainNav ref="mainNavComponent" />
     </header>
     <main>
       <SentRequests v-if="auth.status" ref="SentRequestsComponent" />
-      <ReceivedRequests
-        @requestHasBeenAccepted="requestHasBeenAccepted"
-        @requestHasBeenCanceled="updateReceivedRequests"
-        v-if="auth.status"
-        ref="ReceivedRequestsComponent"
-      />
-      <router-view @sentRequest="sentRequest" />
+      <ReceivedRequests v-if="auth.status" ref="ReceivedRequestsComponent" />
+      <router-view />
     </main>
     <footer></footer>
   </div>
@@ -38,10 +28,6 @@ const mainNavComponent = ref(null);
 
 const keyIndex = ref(0);
 
-function updateReseivedRequests() {
-  ReceivedRequestsComponent.value.getReceivedRequests();
-}
-
 function requestHasBeenAccepted() {
   SentRequestsComponent.value.getSentRequests();
 }
@@ -50,18 +36,18 @@ function sentRequest() {
   SentRequestsComponent.value.getSentRequests();
 }
 
-function showSentRequests() {
-  SentRequestsComponent.value.toggle();
-}
+// function showSentRequests() {
+//   SentRequestsComponent.value.toggle();
+// }
 
-function showReceivedRequests() {
-  ReceivedRequestsComponent.value.toggle();
-}
+// function showReceivedRequests() {
+//   ReceivedRequestsComponent.value.toggle();
+// }
 
-function updateReceivedRequests() {
-  ReceivedRequestsComponent.value.getReceivedRequests();
-  mainNavComponent.value.getUnreadedReceivedRequestsCount();
-}
+// function updateReceivedRequests() {
+//   ReceivedRequestsComponent.value.getReceivedRequests();
+//   mainNavComponent.value.getUnreadedReceivedRequestsCount();
+// }
 </script>
 
 
