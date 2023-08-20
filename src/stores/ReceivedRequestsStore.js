@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import axios from "../axios";
 
 export const ReceivedRequestsStore = defineStore("receivedRequests", {
   state() {
@@ -9,11 +10,23 @@ export const ReceivedRequestsStore = defineStore("receivedRequests", {
     };
   },
   actions: {
-    setReceivedRequests(receivedRequests) {
-      this.receivedRequests = receivedRequests;
+    async setReceivedRequests() {
+      try {
+        let res = await axios.get("receivedRequests");
+
+        this.receivedRequests = res.data.data;
+      } catch (error) {
+        console.log(error);
+      }
     },
-    setUnreadedReceivedRequestsCount(count) {
-      this.UnreadedReceivedRequestsCount = count;
+    async setUnreadedReceivedRequestsCount() {
+      try {
+        let count = await axios.get("unreadedReceivedRequestsCount");
+        this.unreadedReceivedRequestsCount = count.data.data.count;
+      } catch (errors) {
+        console.log(errors);
+      }
+      // this.UnreadedReceivedRequestsCount = count;
     },
     toggleStatus() {
       this.status = !this.status;

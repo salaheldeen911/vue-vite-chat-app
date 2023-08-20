@@ -103,13 +103,9 @@ import { AuthStore } from "../stores/AuthStore";
 import { ReceivedRequestsStore } from "../stores/ReceivedRequestsStore";
 import { SentRequestsStore } from "../stores/SentRequestsStore";
 
-import SentRequests from "./requests/SentRequests.vue";
-import ReceivedRequests from "./requests/ReceivedRequests.vue";
-// import Echo from "laravel-echo";
 import echo from "../echo";
 
 export default {
-  name: "mainNav",
   setup() {
     const ReceivedRequestStore = ReceivedRequestsStore();
     const SentRequestStore = SentRequestsStore();
@@ -117,7 +113,6 @@ export default {
     const auth = AuthStore();
     return { auth, ReceivedRequestStore, SentRequestStore };
   },
-  components: { SentRequests, ReceivedRequests },
 
   mounted() {
     if (this.auth.status) {

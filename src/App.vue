@@ -36,8 +36,6 @@ const SentRequestsComponent = ref(null);
 const ReceivedRequestsComponent = ref(null);
 const mainNavComponent = ref(null);
 
-const keyIndex = ref(0);
-
 function requestHasBeenAccepted() {
   SentRequestsComponent.value.getSentRequests();
 }
