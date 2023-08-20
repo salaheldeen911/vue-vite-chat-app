@@ -14,7 +14,7 @@
     <div class="users-list-body">
       <ul class="list-unstyled chat-list mt-2 mb-0">
         <li
-          @click.exact="this.sendRequest(user)"
+          @click.exact="sendRequest(user)"
           v-for="user in users"
           :key="user.id"
           class="user mb-2"
@@ -47,14 +47,25 @@ import { UsersStore } from "../../stores/UsersStore";
 import axios from "axios";
 import { storeToRefs } from "pinia";
 import { onMounted, watch } from "vue";
+import { SentRequestsStore } from "../../stores/SentRequestsStore";
 
+const SentRequestStore = SentRequestsStore();
 const UserStore = UsersStore();
 const { users } = storeToRefs(UserStore);
 
 async function sendRequest(user) {
   if (confirm("DO you want to send a friend request to " + user.name)) {
     let r = await axios.post("friendRequest", user);
-    // this.$emit("sentRequest");
+    setSentRequests();
+  }
+}
+
+async function setSentRequests() {
+  try {
+    let res = await axios.get("sentRequests");
+    SentRequestStore.setSentRequests(res.data.data);
+  } catch (error) {
+    console.log(error);
   }
 }
 

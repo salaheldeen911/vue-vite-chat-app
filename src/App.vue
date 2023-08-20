@@ -1,11 +1,21 @@
 <template>
   <div id="site-container">
     <header>
-      <mainNav ref="mainNavComponent" />
+      <mainNav
+        @sentRequestsFocus="sentRequestsFocus"
+        @receivedRequestsFocus="receivedRequestsFocus"
+        ref="mainNavComponent"
+      />
     </header>
     <main>
       <SentRequests v-if="auth.status" ref="SentRequestsComponent" />
-      <ReceivedRequests v-if="auth.status" ref="ReceivedRequestsComponent" />
+      <ReceivedRequests
+        @updateUnreadedReceivedRequestsCount="
+          updateUnreadedReceivedRequestsCount
+        "
+        v-if="auth.status"
+        ref="ReceivedRequestsComponent"
+      />
       <router-view />
     </main>
     <footer></footer>
@@ -32,10 +42,21 @@ function requestHasBeenAccepted() {
   SentRequestsComponent.value.getSentRequests();
 }
 
+function sentRequestsFocus() {
+  SentRequestsComponent.value.$el.focus();
+}
+
+function receivedRequestsFocus() {
+  ReceivedRequestsComponent.value.$el.focus();
+}
+
 function sentRequest() {
   SentRequestsComponent.value.getSentRequests();
 }
 
+function updateUnreadedReceivedRequestsCount() {
+  mainNavComponent.value.getUnreadedReceivedRequestsCount();
+}
 // function showSentRequests() {
 //   SentRequestsComponent.value.toggle();
 // }

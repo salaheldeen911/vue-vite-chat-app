@@ -5,6 +5,7 @@ export const ChatsStore = defineStore("chats", {
     return {
       chats: [],
       activeChat: null,
+      isPublic: true,
     };
   },
   actions: {
@@ -15,6 +16,16 @@ export const ChatsStore = defineStore("chats", {
       this.activeChat = id;
     },
     resetActiveChat() {
+      this.isPublic = true;
+    },
+    setIsPublic(status) {
+      this.isPublic = status;
+    },
+    resetIsPublic(status) {
+      this.isPublic = true;
+    },
+    reset() {
+      this.isPublic = true;
       this.activeChat = null;
     },
   },
@@ -24,6 +35,7 @@ export const ChatsStore = defineStore("chats", {
         key: "chats",
         storage: localStorage,
         paths: ["chats"],
+        // paths: ["chats", "activeChat", "isPublic"],
       },
     ],
     enabled: true,

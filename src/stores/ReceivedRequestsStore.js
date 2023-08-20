@@ -5,11 +5,15 @@ export const ReceivedRequestsStore = defineStore("receivedRequests", {
     return {
       receivedRequests: [],
       status: false,
+      UnreadedReceivedRequestsCount: 0,
     };
   },
   actions: {
     setReceivedRequests(receivedRequests) {
       this.receivedRequests = receivedRequests;
+    },
+    setUnreadedReceivedRequestsCount(count) {
+      this.UnreadedReceivedRequestsCount = count;
     },
     toggleStatus() {
       this.status = !this.status;
@@ -20,7 +24,7 @@ export const ReceivedRequestsStore = defineStore("receivedRequests", {
       {
         key: "receivedRequests",
         storage: localStorage,
-        paths: ["receivedRequests", "status"],
+        paths: ["receivedRequests", "status", "UnreadedReceivedRequestsCount"],
       },
     ],
     enabled: true,

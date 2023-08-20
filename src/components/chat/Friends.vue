@@ -40,9 +40,15 @@ const { chats } = storeToRefs(ChatStore);
 const OnlineStore = OnlineUsersStore();
 const { onlineUsers } = storeToRefs(OnlineStore);
 
-const emit = defineEmits(["openchat"]);
+// const emit = defineEmits(["openchat"]);
+
 function openChat(id) {
-  emit("openChat", id);
+  ChatStore.setIsPublic(false);
+  ChatStore.setActiveChat(id);
+  console.log(ChatStore.isPublic);
+  console.log(ChatStore.activeChat);
+
+  // emit("openChat", id);
 }
 
 async function setChats() {
@@ -72,10 +78,12 @@ function showOnlineFriends() {
 
   for (const chat of chats.value) {
     let chatElement = document.getElementById("user-" + chat.user.id);
-    if (onlineUsersIds.includes(chat.user.id)) {
-      chatElement.getElementsByTagName("i")[0].classList.remove("none");
-    } else {
-      chatElement.getElementsByTagName("i")[0].classList.add("none");
+    if (chat.status) {
+      if (onlineUsersIds.includes(chat.user.id)) {
+        chatElement.getElementsByTagName("i")[0].classList.remove("none");
+      } else {
+        chatElement.getElementsByTagName("i")[0].classList.add("none");
+      }
     }
   }
 }

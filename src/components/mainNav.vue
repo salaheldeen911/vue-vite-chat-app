@@ -121,14 +121,24 @@ export default {
 
   mounted() {
     if (this.auth.status) {
-      this.getUnreadedReceivedRequestsCount();
       if (!window.Echo) echo.initLaravelEcho();
+      this.getUnreadedReceivedRequestsCount();
+      // if (!window.Echo) echo.initLaravelEcho();
+
+      // window.Echo.private(`friend-request-channel.${this.auth.user.id}`)
+      //   .listen("FriendRquestEvent", (e) => {
+      //     this.getUnreadedReceivedRequestsCount();
+      //     this.$emit("updateReseivedRequests");
+      //     console.log("event", e);
+      //   })
+      //   .error((error) => {
+      //     console.log(error);
+      //   });
 
       window.Echo.private(`friend-request-channel.${this.auth.user.id}`)
         .listen("FriendRquestEvent", (e) => {
           this.getUnreadedReceivedRequestsCount();
-          this.$emit("updateReseivedRequests");
-          console.log("event", e);
+          console.log("friend request event {{ count }}", e);
         })
         .error((error) => {
           console.log(error);
@@ -162,15 +172,22 @@ export default {
         this.$refs.toggler.click();
       }
       this.SentRequestStore.toggleStatus();
-      // this.$emit("showSentRequests");
+      this.$emit("sentRequestsFocus");
     },
     async showReceivedRequests() {
-      try {
-        // this.$emit("showReceivedRequests");
-        this.ReceivedRequestStore.toggleStatus();
+      // console.log("why");
+      // this.$emit("receivedRequestsFocus");
 
-        await axios.put("readAllReceivedRequests");
-        this.getUnreadedReceivedRequestsCount();
+      try {
+        console.log(this.ReceivedRequestStore.status);
+        if (!this.ReceivedRequestStore.status) {
+          this.ReceivedRequestStore.toggleStatus();
+          this.$emit("receivedRequestsFocus");
+          await axios.put("readAllReceivedRequests");
+          this.getUnreadedReceivedRequestsCount();
+        }
+
+        // this.ReceivedRequestStore.toggleStatus();
       } catch (errors) {
         console.log(errors);
       }

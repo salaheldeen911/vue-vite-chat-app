@@ -44,6 +44,7 @@ const ReceivedRequestStore = ReceivedRequestsStore();
 const { receivedRequests, status } = storeToRefs(ReceivedRequestStore);
 const auth = AuthStore();
 const receivedRequestsContainer = ref(null);
+const emit = defineEmits(["updateUnreadedReceivedRequestsCount"]);
 
 async function getReceivedRequests() {
   try {
@@ -74,13 +75,24 @@ async function ignore(user) {
   }
 }
 
-function toggle() {
-  if (status.value) receivedRequestsContainer.value.focus();
-}
+// function toggle() {
+//   if (status.value) receivedRequestsContainer.value.focus();
+// }
 
 function handleFocusOut() {
-  status.value = false;
+  setTimeout(() => {
+    if (status.value) status.value = false;
+  }, 200);
 }
+
+// async function getUnreadedReceivedRequestsCount() {
+//   try {
+//     let count = await axios.get("unreadedReceivedRequestsCount");
+//     this.unreadedReceivedRequestsCount = count.data.data.count;
+//   } catch (errors) {
+//     console.log(errors);
+//   }
+// }
 
 onMounted(async () => {
   axios.defaults.headers.common["Authorization"] = auth.token(); // `Bearer ${this.auth.token()}`;
@@ -88,19 +100,29 @@ onMounted(async () => {
 
   window.Echo.private(`cancel-friend-request-channel.${auth.user.id}`)
     .listen("CancelFriendRquestEvent", (e) => {
-      this.getReceivedRequests();
+      getReceivedRequests();
 
       console.log("event", e);
     })
     .error((error) => {
       console.log(error);
     });
-  await getReceivedRequests();
+
+  window.Echo.private(`friend-request-channel.${auth.user.id}`)
+    .listen("FriendRquestEvent", (e) => {
+      // let count = getUnreadedReceivedRequestsCount();
+      // ReceivedRequestStore.setUnreadedReceivedRequestsCount(count);
+      getReceivedRequests();
+      console.log("friend request event", e);
+    })
+    .error((error) => {
+      console.log(error);
+    });
 });
 
-watch(status, (status) => {
-  if (status) toggle();
-});
+// watch(status, (status) => {
+//   if (status) toggle();
+// });
 </script>
 
 <style scoped>

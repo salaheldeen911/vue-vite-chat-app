@@ -101,8 +101,9 @@ const sentRequestsContainer = ref(null);
 
 async function getSentRequests() {
   try {
-    let res = await axios.get("sentRequests");
-    SentRequestStore.setSentRequests(res.data.data);
+    // let res = await axios.get("sentRequests");
+    SentRequestStore.setSentRequests();
+    // console.log(res.data.data);
   } catch (error) {
     console.log(error);
   }
@@ -117,11 +118,13 @@ async function cancelRequest(user) {
   }
 }
 
-function toggle() {
-  if (status.value) sentRequestsContainer.value.focus();
-}
+// function toggle() {
+//   if (status.value) sentRequestsContainer.value.focus();
+// }
 
 function handleFocusOut() {
+  sentRequestsContainer.value.focus();
+  console.log("D:");
   status.value = false;
 }
 
@@ -131,25 +134,25 @@ onMounted(async () => {
   await getSentRequests();
 });
 
-watch(
-  () => status.value,
-  () => {
-    toggle();
-  },
-  { deep: true }
-);
+// watch(
+//   () => status.value,
+//   () => {
+//     toggle();
+//   },
+//   { deep: true }
+// );
 
-watch(
-  () => sentRequests.value,
-  () => {
-    // getUsers();
-  },
-  { deep: true }
-);
+// watch(
+//   () => sentRequests.value,
+//   () => {
+//     // getUsers();
+//   },
+//   { deep: true }
+// );
 
-defineExpose({
-  toggle,
-});
+// defineExpose({
+//   toggle,
+// });
 </script>
 
 <style scoped>

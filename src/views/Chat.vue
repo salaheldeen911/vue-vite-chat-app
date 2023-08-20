@@ -9,7 +9,7 @@
         ></span>
       </div>
       <not-friends />
-      <friends @openChat="openChat" ref="friendsComponent" />
+      <friends ref="friendsComponent" />
       <div @click="hideUsers()" class="hideBtn none" ref="arrowHide">
         <span
           id="arrowHide"
@@ -34,9 +34,9 @@ const arrowShow = ref(null);
 const arrowHide = ref(null);
 const mainChatComponent = ref(null);
 
-function openChat(id) {
-  mainChatComponent.value.openPrivateChat(id);
-}
+// function openChat(id) {
+//   mainChatComponent.value.openPrivateChat(id);
+// }
 function showUsers() {
   friendsComponent.value.classList.add("show-users-lists");
   arrowShow.value.classList.add("hide", "disabled");

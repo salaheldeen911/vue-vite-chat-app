@@ -1,26 +1,22 @@
 <template>
-  <public-chat ref="fo" :class="{ none: !isPublicChat }" />
-  <private-chat ref="privateChat" :class="{ none: isPublicChat }" />
+  <public-chat v-if="isPublic" ref="fo" />
+  <private-chat v-if="!isPublic" ref="privateChat" />
 </template>
 
-<script>
+<script setup>
 import PublicChat from "./PublicChat.vue";
 import PrivateChat from "./PrivateChat.vue";
+import { ref } from "vue";
+import { ChatsStore } from "../../../stores/ChatsStore";
+import axios from "axios";
+import { storeToRefs } from "pinia";
+import { onMounted, watch } from "vue";
 
-export default {
-  components: { PublicChat, PrivateChat },
+const ChatStore = ChatsStore();
+const { activeChat, isPublic } = storeToRefs(ChatStore);
 
-  data() {
-    return {
-      isPublicChat: true,
-    };
-  },
-
-  methods: {
-    openPrivateChat(id) {
-      this.isPublicChat = false;
-      this.$refs.privateChat.getData(id);
-    },
-  },
-};
+// function openPrivateChat(id) {
+//   this.isPublicChat = false;
+//   this.$refs.privateChat.getData(id);
+// }
 </script>
