@@ -97,117 +97,78 @@
   </nav>
 </template>
 
-<script>
+<script setup>
 import axios from "axios";
 import { AuthStore } from "../stores/AuthStore";
 import { ReceivedRequestsStore } from "../stores/ReceivedRequestsStore";
 import { SentRequestsStore } from "../stores/SentRequestsStore";
+import { storeToRefs } from "pinia";
+import { ref } from "vue";
 
 import echo from "../echo";
+import { useRouter } from "vue-router";
 
-export default {
-  setup() {
-    const ReceivedRequestStore = ReceivedRequestsStore();
-    const SentRequestStore = SentRequestsStore();
+const router = useRouter();
+const ReceivedRequestStore = ReceivedRequestsStore();
+const { unreadedReceivedRequestsCount } = storeToRefs(ReceivedRequestStore);
+const SentRequestStore = SentRequestsStore();
+const auth = AuthStore();
 
-    const auth = AuthStore();
-    return { auth, ReceivedRequestStore, SentRequestStore };
-  },
+const clicked = ref(false);
+const lastRequest = ref(0);
+const delay = ref(400);
+const toggler = ref(null);
 
-  mounted() {
-    if (this.auth.status) {
-      if (!window.Echo) echo.initLaravelEcho();
-      this.getUnreadedReceivedRequestsCount();
-      // if (!window.Echo) echo.initLaravelEcho();
+const emit = defineEmits(["sentRequestsFocus", "receivedRequestsFocus"]);
 
-      // window.Echo.private(`friend-request-channel.${this.auth.user.id}`)
-      //   .listen("FriendRquestEvent", (e) => {
-      //     this.getUnreadedReceivedRequestsCount();
-      //     this.$emit("updateReseivedRequests");
-      //     console.log("event", e);
-      //   })
-      //   .error((error) => {
-      //     console.log(error);
-      //   });
+async function logout() {
+  clicked = true;
+  try {
+    axios.post("logout");
+    auth.$reset();
+    window.Echo.leave("public-chat");
+    router.push({ path: "/login", replace: true });
+    clicked.value = false;
 
-      window.Echo.private(`friend-request-channel.${this.auth.user.id}`)
-        .listen("FriendRquestEvent", (e) => {
-          this.getUnreadedReceivedRequestsCount();
-          console.log("friend request event {{ count }}", e);
-        })
-        .error((error) => {
-          console.log(error);
-        });
+    return true;
+  } catch (errors) {
+    console.log(errors);
+    clicked.value = false;
+  }
+}
+async function readAllReceivedRequests() {
+  if (lastRequest.value >= Date.now() - delay.value) return;
+
+  await ReceivedRequestStore.readAllReceivedRequests();
+  ReceivedRequestStore.setUnreadedReceivedRequestsCount();
+
+  lastRequest.value = Date.now();
+}
+function showSentRequests() {
+  if (!ReceivedRequestStore.status) {
+    SentRequestStore.toggleStatus();
+    emit("sentRequestsFocus");
+  }
+
+  if (window.innerWidth < 992) {
+    toggler.value.click();
+  }
+}
+async function showReceivedRequests() {
+  try {
+    if (!ReceivedRequestStore.status) {
+      ReceivedRequestStore.toggleStatus();
+      emit("receivedRequestsFocus");
+      readAllReceivedRequests();
     }
-  },
-  data() {
-    return {
-      clicked: false,
-      unreadedReceivedRequestsCount: 0,
-    };
-  },
-  methods: {
-    async logout() {
-      this.clicked = true;
-      try {
-        axios.post("logout");
-        this.auth.$reset();
-        window.Echo.leave("public-chat");
-        this.$router.push({ path: "/login", replace: true });
-        this.clicked = false;
+  } catch (errors) {
+    console.log(errors);
+  }
 
-        return true;
-      } catch (errors) {
-        console.log(errors);
-        this.clicked = false;
-      }
-    },
-    showSentRequests() {
-      if (window.innerWidth < 992) {
-        this.$refs.toggler.click();
-      }
-      this.SentRequestStore.toggleStatus();
-      this.$emit("sentRequestsFocus");
-    },
-    async showReceivedRequests() {
-      // console.log("why");
-      // this.$emit("receivedRequestsFocus");
-
-      try {
-        console.log(this.ReceivedRequestStore.status);
-        if (!this.ReceivedRequestStore.status) {
-          this.ReceivedRequestStore.toggleStatus();
-          this.$emit("receivedRequestsFocus");
-          await axios.put("readAllReceivedRequests");
-          this.getUnreadedReceivedRequestsCount();
-        }
-
-        // this.ReceivedRequestStore.toggleStatus();
-      } catch (errors) {
-        console.log(errors);
-      }
-
-      if (window.innerWidth < 992) {
-        this.$refs.toggler.click();
-      }
-    },
-    async getUnreadedReceivedRequestsCount() {
-      try {
-        let count = await axios.get("unreadedReceivedRequestsCount", {
-          headers: {
-            Authorization: this.auth.token(),
-          },
-        });
-        this.unreadedReceivedRequestsCount = count.data.data.count;
-
-        return true;
-      } catch (errors) {
-        console.log(errors);
-        this.clicked = false;
-      }
-    },
-  },
-};
+  if (window.innerWidth < 992) {
+    toggler.value.click();
+  }
+}
 </script>
 
 <style scoped>

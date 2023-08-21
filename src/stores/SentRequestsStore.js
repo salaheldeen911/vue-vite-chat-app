@@ -1,6 +1,5 @@
 import axios from "../axios";
 import { defineStore } from "pinia";
-// import { AuthStore } from "./AuthStore";
 
 export const SentRequestsStore = defineStore("sentRequests", {
   state: () => ({
@@ -12,6 +11,14 @@ export const SentRequestsStore = defineStore("sentRequests", {
       try {
         let res = await axios.get("sentRequests");
         this.sentRequests = res.data.data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async cancelRequest(user) {
+      try {
+        await axios.delete("cancelRequest", { data: { user: user } });
+        this.setSentRequests();
       } catch (error) {
         console.log(error);
       }

@@ -4,7 +4,6 @@
     tabindex="0"
     :class="{ show: status }"
     class="requests"
-    ref="receivedRequestsContainer"
   >
     <h5 class="text-center">Received Requests</h5>
     <hr />
@@ -19,11 +18,19 @@
         <p>
           {{ request.name }} has sent you a friend request and his phone number
           is <strong> 01273542801</strong>. You can
-          <strong role="button" @click="accept(request)" class="alert-link"
+          <strong
+            role="button"
+            :disabled="proccessing"
+            @click="accept(request)"
+            class="alert-link"
             >Accept It</strong
           >
           or you can
-          <strong role="button" @click="ignore(request)" class="alert-link"
+          <strong
+            role="button"
+            :disabled="proccessing"
+            @click="ignore(request)"
+            class="alert-link"
             >Ignore It</strong
           >.
         </p>
@@ -38,87 +45,71 @@ import { ReceivedRequestsStore } from "../../stores/ReceivedRequestsStore";
 import { storeToRefs } from "pinia";
 import echo from "../../echo";
 import axios from "axios";
-import { onMounted, watch, ref } from "vue";
+import { onMounted, ref } from "vue";
 
 const ReceivedRequestStore = ReceivedRequestsStore();
 const { receivedRequests, status } = storeToRefs(ReceivedRequestStore);
 const auth = AuthStore();
-const receivedRequestsContainer = ref(null);
-const emit = defineEmits(["updateUnreadedReceivedRequestsCount"]);
-
-// async function getReceivedRequests() {
-//   ReceivedRequestStore.setReceivedRequests();
-// }
+const proccessing = ref(false);
 
 async function accept(user) {
-  try {
-    await axios.post("acceptRequest", user);
-    await ReceivedRequestStore.setReceivedRequests();
-
-    // this.$emit("requestHasBeenAccepted");
-  } catch (error) {
-    console.log(error);
-  }
+  proccessing.value = true;
+  await ReceivedRequestStore.acceptRequest(user);
+  proccessing.value = false;
 }
 
 async function ignore(user) {
-  try {
-    await axios.put("ignoreRequest", user);
-    await ReceivedRequestStore.setReceivedRequests();
-    // this.$emit("requestHasBeenAccepted");
-  } catch (error) {
-    console.log(error);
-  }
+  proccessing.value = true;
+  await ReceivedRequestStore.ignoreRequest(user);
+  proccessing.value = false;
 }
-
-// function toggle() {
-//   if (status.value) receivedRequestsContainer.value.focus();
-// }
 
 function handleFocusOut() {
-  setTimeout(() => {
-    if (status.value) status.value = false;
-  }, 200);
+  if (ReceivedRequestStore.status) ReceivedRequestStore.status = false;
 }
 
-// async function getUnreadedReceivedRequestsCount() {
-//   try {
-//     let count = await axios.get("unreadedReceivedRequestsCount");
-//     this.unreadedReceivedRequestsCount = count.data.data.count;
-//   } catch (errors) {
-//     console.log(errors);
-//   }
-// }
+function listenToFriendRequestChannel() {
+  window.Echo.private(`friend-request-channel.${auth.user.id}`)
+    .listen("FriendRquestEvent", (e) => {
+      ReceivedRequestStore.setUnreadedReceivedRequestsCount();
+      ReceivedRequestStore.setReceivedRequests();
+    })
+    .error((error) => {
+      console.log(error);
+    });
+}
+
+function listenToCancelFriendRequestChannel() {
+  window.Echo.private(`cancel-friend-request-channel.${auth.user.id}`)
+    .listen("CancelFriendRquestEvent", (e) => {
+      ReceivedRequestStore.setReceivedRequests();
+    })
+    .error((error) => {
+      console.log(error);
+    });
+}
 
 onMounted(async () => {
   axios.defaults.headers.common["Authorization"] = auth.token(); // `Bearer ${this.auth.token()}`;
   if (!window.Echo) echo.initLaravelEcho();
 
-  window.Echo.private(`cancel-friend-request-channel.${auth.user.id}`)
-    .listen("CancelFriendRquestEvent", (e) => {
+  window.Echo.private(`friend-request-channel.${auth.user.id}`)
+    .listen("FriendRquestEvent", (e) => {
+      ReceivedRequestStore.setUnreadedReceivedRequestsCount();
       ReceivedRequestStore.setReceivedRequests();
-
-      console.log("event", e);
     })
     .error((error) => {
       console.log(error);
     });
 
-  window.Echo.private(`friend-request-channel.${auth.user.id}`)
-    .listen("FriendRquestEvent", (e) => {
-      // let count = getUnreadedReceivedRequestsCount();
-      ReceivedRequestStore.setUnreadedReceivedRequestsCount();
+  window.Echo.private(`cancel-friend-request-channel.${auth.user.id}`)
+    .listen("CancelFriendRquestEvent", (e) => {
       ReceivedRequestStore.setReceivedRequests();
-      console.log("friend request event", e);
     })
     .error((error) => {
       console.log(error);
     });
 });
-
-// watch(status, (status) => {
-//   if (status) toggle();
-// });
 </script>
 
 <style scoped>

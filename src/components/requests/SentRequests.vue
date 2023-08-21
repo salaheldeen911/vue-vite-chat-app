@@ -21,7 +21,7 @@
           <strong
             ><span
               role="button"
-              @click="cancelRequest(request)"
+              @click="!proccessing ? cancelRequest(request) : null"
               class="alert-link"
               >Cancel It</span
             ></strong
@@ -98,34 +98,23 @@ const SentRequestStore = SentRequestsStore();
 const { sentRequests, status } = storeToRefs(SentRequestStore);
 const auth = AuthStore();
 const sentRequestsContainer = ref(null);
+const proccessing = ref(false);
 
 async function getSentRequests() {
-  try {
-    // let res = await axios.get("sentRequests");
-    SentRequestStore.setSentRequests();
-    // console.log(res.data.data);
-  } catch (error) {
-    console.log(error);
-  }
+  SentRequestStore.setSentRequests();
 }
 
 async function cancelRequest(user) {
-  try {
-    await axios.delete("cancelRequest", { data: { user: user } });
-    getSentRequests();
-  } catch (error) {
-    console.log(error);
-  }
+  SentRequestStore.status = false;
+  proccessing.value = true;
+  await SentRequestStore.cancelRequest(user);
+  proccessing.value = false;
 }
 
-// function toggle() {
-//   if (status.value) sentRequestsContainer.value.focus();
-// }
-
 function handleFocusOut() {
-  sentRequestsContainer.value.focus();
-  console.log("D:");
-  status.value = false;
+  // setTimeout(() => {
+  if (SentRequestStore.status) SentRequestStore.status = false;
+  // }, 200);
 }
 
 onMounted(async () => {

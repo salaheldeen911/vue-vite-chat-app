@@ -45,8 +45,6 @@ const { onlineUsers } = storeToRefs(OnlineStore);
 function openChat(id) {
   ChatStore.setIsPublic(false);
   ChatStore.setActiveChat(id);
-  console.log(ChatStore.isPublic);
-  console.log(ChatStore.activeChat);
 
   // emit("openChat", id);
 }
