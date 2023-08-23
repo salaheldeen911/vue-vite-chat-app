@@ -18,12 +18,12 @@ export const ReceivedRequestsStore = defineStore("receivedRequests", {
         console.log(error);
       }
     },
-    async setUnreadedReceivedRequestsCount() {
-      console.log("D:set");
+    async setUnreadedReceivedRequestsCount(token = null) {
       try {
+        if (token) axios.defaults.headers.common["Authorization"] = token;
+
         let count = await axios.get("unreadedReceivedRequestsCount");
         this.unreadedReceivedRequestsCount = count.data.data.count;
-        console.log(this.unreadedReceivedRequestsCount);
       } catch (errors) {
         console.log(errors);
       }
@@ -37,10 +37,17 @@ export const ReceivedRequestsStore = defineStore("receivedRequests", {
         console.log(error);
       }
     },
+    hi(user) {
+      return "hi";
+    },
     async acceptRequest(user) {
+      console.log("D:", user);
       try {
-        await axios.post("acceptRequest", user);
-        await this.setReceivedRequests();
+        console.log("d");
+        let m = await axios.post("acceptRequest", user);
+        console.log(m);
+
+        // await this.setReceivedRequests();
 
         // this.$emit("requestHasBeenAccepted");
       } catch (error) {

@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import axios from "../axios";
 
 export const ChatsStore = defineStore("chats", {
   state() {
@@ -9,8 +10,10 @@ export const ChatsStore = defineStore("chats", {
     };
   },
   actions: {
-    setChats(chats) {
-      this.chats = chats;
+    async setChats() {
+      let updatedChats = await axios.get("chats");
+
+      this.chats = updatedChats.data.chats;
     },
     setActiveChat(id) {
       this.activeChat = id;

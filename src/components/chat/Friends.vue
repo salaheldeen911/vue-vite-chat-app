@@ -1,6 +1,7 @@
 <template>
   <div class="users-list">
     <div class="titel text-center fw-bold fst-italic">Friends</div>
+
     <div class="users-list-body">
       <ul class="list-unstyled chat-list mt-2 mb-0">
         <li
@@ -27,7 +28,6 @@
     </div>
   </div>
 </template>
-
 <script setup>
 import { OnlineUsersStore } from "../../stores/OnlineUsersStore";
 import { ChatsStore } from "../../stores/ChatsStore";
@@ -50,14 +50,13 @@ function openChat(id) {
 }
 
 async function setChats() {
-  let chats = await axios.get("chats");
-  ChatStore.setChats(chats.data.chats);
+  ChatStore.setChats();
 }
 
 onMounted(async () => {
   try {
-    await setChats();
-    showOnlineFriends(onlineUsers);
+    await ChatStore.setChats();
+    showOnlineFriends();
   } catch (error) {
     console.log(error);
   }
@@ -73,17 +72,18 @@ function getOnlineUsersIds() {
 
 function showOnlineFriends() {
   const onlineUsersIds = getOnlineUsersIds();
-
-  for (const chat of chats.value) {
-    let chatElement = document.getElementById("user-" + chat.user.id);
-    if (chat.status) {
-      if (onlineUsersIds.includes(chat.user.id)) {
-        chatElement.getElementsByTagName("i")[0].classList.remove("none");
-      } else {
-        chatElement.getElementsByTagName("i")[0].classList.add("none");
+  setTimeout(() => {
+    for (const chat of chats.value) {
+      let chatElement = document.getElementById("user-" + chat.user.id);
+      if (chat.status) {
+        if (onlineUsersIds.includes(chat.user.id)) {
+          chatElement.getElementsByTagName("i")[0].classList.remove("none");
+        } else {
+          chatElement.getElementsByTagName("i")[0].classList.add("none");
+        }
       }
     }
-  }
+  }, 200);
 }
 
 watch(

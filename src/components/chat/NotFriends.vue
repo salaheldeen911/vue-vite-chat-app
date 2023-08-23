@@ -69,17 +69,17 @@ async function setSentRequests() {
   }
 }
 
-async function getUsers() {
-  try {
-    return await axios.get(`users/10`);
-  } catch (error) {
-    console.log("error", error);
-  }
-}
+// async function getUsers() {
+//   try {
+//     return await axios.get(`users/10`);
+//   } catch (error) {
+//     console.log("error", error);
+//   }
+// }
 
 onMounted(async () => {
-  let users = await getUsers();
-  UserStore.setUsers(users.data.users);
+  // let users = await getUsers();
+  UserStore.setUsers();
 });
 
 watch(

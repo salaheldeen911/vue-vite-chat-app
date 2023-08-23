@@ -42,19 +42,26 @@
 <script setup>
 import { AuthStore } from "../../stores/AuthStore";
 import { ReceivedRequestsStore } from "../../stores/ReceivedRequestsStore";
+import { GeneralStore } from "../../stores/GeneralStore";
 import { storeToRefs } from "pinia";
 import echo from "../../echo";
 import axios from "axios";
 import { onMounted, ref } from "vue";
 
 const ReceivedRequestStore = ReceivedRequestsStore();
+const General = GeneralStore();
+
 const { receivedRequests, status } = storeToRefs(ReceivedRequestStore);
 const auth = AuthStore();
 const proccessing = ref(false);
 
 async function accept(user) {
   proccessing.value = true;
+  ReceivedRequestStore.status = false;
+
   await ReceivedRequestStore.acceptRequest(user);
+  General.refreshStores();
+
   proccessing.value = false;
 }
 
@@ -93,22 +100,9 @@ onMounted(async () => {
   axios.defaults.headers.common["Authorization"] = auth.token(); // `Bearer ${this.auth.token()}`;
   if (!window.Echo) echo.initLaravelEcho();
 
-  window.Echo.private(`friend-request-channel.${auth.user.id}`)
-    .listen("FriendRquestEvent", (e) => {
-      ReceivedRequestStore.setUnreadedReceivedRequestsCount();
-      ReceivedRequestStore.setReceivedRequests();
-    })
-    .error((error) => {
-      console.log(error);
-    });
+  listenToCancelFriendRequestChannel();
 
-  window.Echo.private(`cancel-friend-request-channel.${auth.user.id}`)
-    .listen("CancelFriendRquestEvent", (e) => {
-      ReceivedRequestStore.setReceivedRequests();
-    })
-    .error((error) => {
-      console.log(error);
-    });
+  listenToFriendRequestChannel();
 });
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="data" class="main-chat h-100">
+    <div v-if="chat" class="main-chat h-100">
       <preLoader v-if="loading" ref="preLoaderComponent" />
 
       <div class="titel text-center fw-bold fst-italic">
@@ -24,15 +24,15 @@
             />
           </a>
           <div class="chat-about">
-            <h6 class="m-b-0">{{ data.user.name }}</h6>
+            <h6 class="m-b-0">{{ chat.user.name }}</h6>
             <small>Last seen: 2 hours ago</small>
           </div>
         </div>
 
-        <div class="chat-icons">
+        <div v-if="chat.status" class="chat-icons">
           <a
             href="javascript:void(0);"
-            @click="unfriend(data.user)"
+            @click="unfriend(chat.user)"
             class="btn btn-outline-danger"
             >Unfriend</a
           >
@@ -40,10 +40,10 @@
       </div>
 
       <div class="chat-history" ref="chatHistory">
-        <ul class="m-b-0" v-if="data.messages.length">
+        <ul class="m-b-0" v-if="chat.messages.length">
           <li
             class="clearfix"
-            v-for="message in data.messages"
+            v-for="message in chat.messages"
             :key="message.id"
           >
             <div
@@ -76,7 +76,7 @@
           </li>
         </ul>
       </div>
-      <div class="chat-message clearfix">
+      <div v-if="chat.status" class="chat-message clearfix">
         <form class="input-group mb-0" @submit.prevent.enter="send">
           <div class="input-group-prepend">
             <button :disabled="sending" type="submit" class="input-group-text">
@@ -224,27 +224,26 @@ import { storeToRefs } from "pinia";
 import { onMounted, watch, ref } from "vue";
 import preLoader from "../../preLoader.vue";
 import { AuthStore } from "../../../stores/AuthStore";
+import echo from "../../../echo";
+import { GeneralStore } from "../../../stores/GeneralStore";
 
 const auth = AuthStore();
 const ChatStore = ChatsStore();
+const General = GeneralStore();
 const { activeChat, isPublic } = storeToRefs(ChatStore);
-const data = ref(null);
+const chat = ref(null);
 const loading = ref(true);
 const sending = ref(false);
 const message = ref("");
 
 onMounted(async () => {
-  try {
-    await getData();
-  } catch (error) {
-    console.log(error);
-  }
+  await getChat();
 });
 
-async function getData() {
+async function getChat() {
   let res = await axios.get(`getPrivateChat/${activeChat.value}`);
 
-  data.value = res.data.data;
+  chat.value = res.data.data;
   loading.value = false;
   // loading = false;
   // this.isActive = true;
@@ -284,6 +283,9 @@ async function unfriend(user) {
     let i = await axios.delete("unfriend", {
       data: { user: user, chat_id: ChatStore.activeChat },
     });
+    resetChat();
+    General.refreshStores();
+
     console.log(i);
   } catch (error) {
     console.log(error);

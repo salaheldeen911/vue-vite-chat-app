@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import axios from "../axios";
 
 export const UsersStore = defineStore("users", {
   state() {
@@ -7,8 +8,13 @@ export const UsersStore = defineStore("users", {
     };
   },
   actions: {
-    setUsers(users) {
-      this.users = users;
+    async setUsers(users) {
+      try {
+        let res = await axios.get(`users/10`);
+        this.users = res.data.users;
+      } catch (error) {
+        console.log("error", error);
+      }
     },
   },
   persist: {

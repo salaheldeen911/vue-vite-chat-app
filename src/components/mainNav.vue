@@ -103,7 +103,7 @@ import { AuthStore } from "../stores/AuthStore";
 import { ReceivedRequestsStore } from "../stores/ReceivedRequestsStore";
 import { SentRequestsStore } from "../stores/SentRequestsStore";
 import { storeToRefs } from "pinia";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 
 import echo from "../echo";
 import { useRouter } from "vue-router";
@@ -121,8 +121,13 @@ const toggler = ref(null);
 
 const emit = defineEmits(["sentRequestsFocus", "receivedRequestsFocus"]);
 
+onMounted(async () => {
+  if (auth.status)
+    ReceivedRequestStore.setUnreadedReceivedRequestsCount(auth.token());
+});
+
 async function logout() {
-  clicked = true;
+  clicked.value = true;
   try {
     axios.post("logout");
     auth.$reset();
