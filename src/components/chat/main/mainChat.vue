@@ -25,7 +25,6 @@ onMounted(async () => {
 
   window.Echo.private(`accepted-friend-request-channel.${auth.user.id}`)
     .listen("AcceptedFriendRquestEvent", (e) => {
-      console.log("accepted-friend-request-channel");
       general.refreshStores();
     })
     .error((error) => {
@@ -34,29 +33,10 @@ onMounted(async () => {
 
   window.Echo.private(`unfriend-user-channel.${auth.user.id}`)
     .listen("UnfriendEvent", (e) => {
-      console.log("unfriend:event");
       general.refreshStores();
     })
     .error((error) => {
       console.log(error);
     });
-  console.log("id", auth.user.id);
 });
-// onMounted(() => {
-//   if (!window.Echo) echo.initLaravelEcho();
-//   console.log(window.Echo);
-//   window.Echo.private(`accepted-friend-request-channel.${auth.id}`)
-//     .listen("AcceptedFriendRquestEvent", (e) => {
-//       ReceivedRequestStore.setReceivedRequests();
-//       ChatStore;
-//     })
-//     .error((error) => {
-//       console.log(error);
-//     });
-// });
-
-// function openPrivateChat(id) {
-//   this.isPublicChat = false;
-//   this.$refs.privateChat.getData(id);
-// }
 </script>

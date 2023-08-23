@@ -96,126 +96,6 @@
   </div>
 </template>
 
-<!-- <script>
-import preLoader from "../../preLoader.vue";
-import { AuthStore } from "../../../stores/AuthStore";
-import { ChatsStore } from "../../../stores/ChatsStore";
-import { storeToRefs } from "pinia";
-
-import axios from "axios";
-
-export default {
-  data() {
-    return {
-      noData: true,
-      scroll: true,
-      loading: true,
-      // data: null,
-      message: "",
-      sending: false,
-      isActive: false,
-    };
-  },
-  setup() {
-    const auth = AuthStore();
-    const ChatStore = ChatsStore();
-    const { activeChat, isPublic } = storeToRefs(ChatStore);
-    const data = ref(null);
-
-    return { auth, activeChat, ChatStore, isPublic, data };
-  },
-
-  async mounted() {
-    let l = await this.getData();
-    const auth = AuthStore();
-
-    // window.Echo.join("public-chat")
-    //   .here((users) => {
-    //     //returnning all users but the current
-    //     this.$emit("setUsers", users);
-    //   })
-    //   .joining((user) => {
-    //     //adding the juiond user th users
-    //     this.$emit("userJoined", user);
-    //   })
-    //   .leaving((user) => {
-    //     // removing the left user from users
-    //     this.$emit("leftUser", user);
-    //   })
-    //   .error((error) => {
-    //     console.log(error);
-    //   })
-    //   .listen("MessageEvent", (message) => {
-    //     this.data.push(message.message);
-    //   });
-  },
-
-  // beforeUnmount() {
-  //   window.Echo.leave("public-chat"); // ??
-  // },
-
-  components: { preLoader },
-
-  // updated() {
-  //   if (this.scroll) {
-  //     this.$refs.chatHistory.scrollTop = this.$refs.chatHistory.scrollHeight;
-  //     this.loading = false;
-  //   }
-  // },
-
-  watch: {
-    data(newVal) {
-      newVal.length ? (this.noData = false) : (this.noData = true);
-      this.loading = false;
-    },
-  },
-
-  methods: {
-    async getData(id) {
-      console.log(this.activeChat);
-      try {
-        let res = await axios.get(`getPrivateChat/${this.activeChat}`);
-
-        this.data.value = res.data.data;
-        console.log(this.data.value);
-        this.loading = false;
-        this.isActive = true;
-        setTimeout(() => {
-          this.$refs.mainInput.focus();
-        }, 0);
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    async send() {
-      if (!this.validate(this.message)) {
-        return false;
-      }
-      this.sending = true;
-      try {
-        await axios.post("messages", { message: this.message });
-        this.scroll = true;
-        this.$refs.mainInput.focus();
-      } catch (error) {
-        console.log(error);
-      }
-      this.message = "";
-      this.$refs.mainInput.focus();
-      this.sending = false;
-    },
-
-    validate(body) {
-      // to prevent html tags
-      const htmlPreventer = /<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g;
-      if (htmlPreventer.test(body)) return false;
-
-      // to accept all chars, nums, spaces, new lines and prevent less than 3 chars, over 255 chars.
-      const pattern = /^([a-zA-Z0-9_ \s\S-]){1,5000}$/;
-      return pattern.test(body);
-    },
-  },
-};
-</script> -->
 
 <script setup>
 import { ChatsStore } from "../../../stores/ChatsStore";
@@ -245,38 +125,7 @@ async function getChat() {
 
   chat.value = res.data.data;
   loading.value = false;
-  // loading = false;
-  // this.isActive = true;
-  // setTimeout(() => {
-  //   this.$refs.mainInput.focus();
-  // }, 0);
 }
-// async function send() {
-//   if (!this.validate(this.message)) {
-//     return false;
-//   }
-//   this.sending = true;
-//   try {
-//     await axios.post("messages", { message: this.message });
-//     this.scroll = true;
-//     this.$refs.mainInput.focus();
-//   } catch (error) {
-//     console.log(error);
-//   }
-//   this.message = "";
-//   this.$refs.mainInput.focus();
-//   this.sending = false;
-// }
-
-// function validate(body) {
-//   // to prevent html tags
-//   const htmlPreventer = /<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g;
-//   if (htmlPreventer.test(body)) return false;
-
-//   // to accept all chars, nums, spaces, new lines and prevent less than 3 chars, over 255 chars.
-//   const pattern = /^([a-zA-Z0-9_ \s\S-]){1,5000}$/;
-//   return pattern.test(body);
-// }
 
 async function unfriend(user) {
   try {
@@ -285,8 +134,6 @@ async function unfriend(user) {
     });
     resetChat();
     General.refreshStores();
-
-    console.log(i);
   } catch (error) {
     console.log(error);
   }

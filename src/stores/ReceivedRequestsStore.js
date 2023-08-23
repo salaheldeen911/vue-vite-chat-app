@@ -32,7 +32,6 @@ export const ReceivedRequestsStore = defineStore("receivedRequests", {
       try {
         await axios.put("ignoreRequest", user);
         await this.setReceivedRequests();
-        // this.$emit("requestHasBeenAccepted");
       } catch (error) {
         console.log(error);
       }
@@ -41,15 +40,8 @@ export const ReceivedRequestsStore = defineStore("receivedRequests", {
       return "hi";
     },
     async acceptRequest(user) {
-      console.log("D:", user);
       try {
-        console.log("d");
-        let m = await axios.post("acceptRequest", user);
-        console.log(m);
-
-        // await this.setReceivedRequests();
-
-        // this.$emit("requestHasBeenAccepted");
+        await axios.post("acceptRequest", user);
       } catch (error) {
         console.log(error);
       }
