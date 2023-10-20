@@ -3,7 +3,7 @@
     <preLoader v-if="loading" ref="preLoader" />
 
     <div class="titel text-center fw-bold fst-italic">Public Chat</div>
-    <div class="main-chat-header">
+    <!-- <div class="main-chat-header">
       <div class="userInfo">
         <a
           href="javascript:void(0);"
@@ -26,7 +26,7 @@
           ><i class="mdi mdi-image h5"></i
         ></a>
       </div>
-    </div>
+    </div> -->
 
     <div class="chat-history" ref="chatHistory">
       <ul class="m-b-0" v-if="data.length">
@@ -168,4 +168,10 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+#site-container .main-chat {
+  grid-template-rows: 30px 1fr;
+}
+</style>
 
