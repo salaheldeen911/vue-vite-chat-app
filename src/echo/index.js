@@ -1,6 +1,7 @@
 import Echo from "laravel-echo";
 import { OnlineUsersStore } from "../stores/OnlineUsersStore";
 import { AuthStore } from "../stores/AuthStore";
+import axios from "../axios";
 
 function initLaravelEcho() {
   const auth = AuthStore();
@@ -40,13 +41,17 @@ function joinPublicChat() {
       //adding the juiond user th users
       OnlineUsers.joined(user);
     })
-    .leaving((user) => {
+    .leaving(async (user) => {
       // removing the left user from users
+      // let l = await axios.post("left-user", user);
+
       OnlineUsers.left(user);
+
+      // console.log("D:", l);
     })
     .error((error) => {
       console.log(error);
     });
 }
 
-export default { initLaravelEcho };
+export default { initLaravelEcho, init };

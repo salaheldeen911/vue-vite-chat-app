@@ -104,11 +104,6 @@ export default {
 
   async mounted() {
     await this.getData();
-
-    // setTimeout(() => {
-    //   this.$refs.mainInput.focus();
-    // }, 400);
-
     window.Echo.join("public-chat").listen("MessageEvent", (message) => {
       this.data.push(message.message);
     });

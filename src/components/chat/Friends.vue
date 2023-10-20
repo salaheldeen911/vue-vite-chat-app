@@ -18,11 +18,13 @@
           <div class="about">
             <p class="name m-0 p-1">{{ chat.user.name }}</p>
             <p class="phone m-0 p-1">01273542801</p>
+            <!-- <p class="phone m-0 p-1">{{ chat.message }}</p> -->
 
             <div v-if="chat.status" class="status">
               <i class="mdi mdi-check-circle online none"></i>
             </div>
           </div>
+          <TypingAnimation :id="chat.id" />
         </li>
       </ul>
     </div>
@@ -32,6 +34,7 @@
 import { OnlineUsersStore } from "../../stores/OnlineUsersStore";
 import { ChatsStore } from "../../stores/ChatsStore";
 import axios from "axios";
+import TypingAnimation from "../TypingAnimation.vue";
 import { storeToRefs } from "pinia";
 import { onMounted, watch } from "vue";
 
@@ -103,5 +106,10 @@ watch(
 );
 </script>
 
-<style>
+<style scoped>
+.typing {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
 </style>
