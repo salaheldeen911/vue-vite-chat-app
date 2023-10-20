@@ -14,7 +14,7 @@
     <div class="users-list-body">
       <ul class="list-unstyled chat-list mt-2 mb-0">
         <li
-          @click.exact="showRequest($event)"
+          @click.exact="sendRequest(user)"
           v-for="user in users"
           :key="user.id"
           class="user mb-2"
@@ -30,7 +30,7 @@
             </div>
           </div>
           <button
-            @click="this.sendRquest(user.id)"
+            @click="this.sendRequest(user)"
             class="btn btn-primary request-btn"
             style="z-index: 9999"
           >
@@ -42,37 +42,51 @@
   </div>
 </template>
 
-<script>
-import { AuthStore } from "../../stores/AuthStore";
+<script setup>
+import { UsersStore } from "../../stores/UsersStore";
 import axios from "axios";
-export default {
-  setup() {
-    const auth = AuthStore();
-    return { auth };
-  },
-  data() {
-    return {
-      users: [],
-    };
-  },
-  async mounted() {
-    try {
-      let users = await axios.get("users/10");
-      this.users = users.data.users;
-      console.log("users", users);
-    } catch (error) {
-      console.log("error", error);
-    }
-  },
-  methods: {
-    showRequest(e) {
-      if (e.target.tagName == "LI") {
-        e.target.querySelectorAll(".request-btn")[0].classList.toggle("active");
-      }
-    },
-  },
-};
-</script>
+import { storeToRefs } from "pinia";
+import { onMounted, watch } from "vue";
+import { SentRequestsStore } from "../../stores/SentRequestsStore";
 
-<style>
-</style>
+const SentRequestStore = SentRequestsStore();
+const UserStore = UsersStore();
+const { users } = storeToRefs(UserStore);
+
+async function sendRequest(user) {
+  if (confirm("DO you want to send a friend request to " + user.name)) {
+    let r = await axios.post("friendRequest", user);
+    setSentRequests();
+  }
+}
+
+async function setSentRequests() {
+  try {
+    let res = await axios.get("sentRequests");
+    SentRequestStore.setSentRequests(res.data.data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// async function getUsers() {
+//   try {
+//     return await axios.get(`users/10`);
+//   } catch (error) {
+//     console.log("error", error);
+//   }
+// }
+
+onMounted(async () => {
+  // let users = await getUsers();
+  UserStore.setUsers();
+});
+
+watch(
+  () => users.value,
+  () => {
+    // getUsers();
+  },
+  { deep: true }
+);
+</script>

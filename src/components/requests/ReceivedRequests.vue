@@ -4,106 +4,116 @@
     tabindex="0"
     :class="{ show: status }"
     class="requests"
-    ref="receivedRequests"
   >
-    <h5 class="text-center">received Requests</h5>
+    <h5 class="text-center">Received Requests</h5>
     <hr />
 
-    <div
-      v-for="request in receivedRequests"
-      :key="request.id"
-      class="alert alert-primary"
-      role="alert"
-    >
-      <p>
-        {{ request.name }} has sent you a friend request and his phone number is
-        <strong> 01273542801</strong>. You can
-        <strong><a href="#" class="alert-link">Accept</a></strong> or yoe can
-        <strong><a href="#" class="alert-link">Deny it</a></strong
-        >.
-      </p>
-    </div>
-    <div
-      v-for="request in receivedRequests"
-      :key="request.id"
-      class="alert alert-primary"
-      role="alert"
-    >
-      <p>
-        {{ request.name }} has sent you a friend request and his phone number is
-        <strong> 01273542801</strong>. You can
-        <strong><a href="#" class="alert-link">Accept</a></strong> or yoe can
-        <strong><a href="#" class="alert-link">Deny it</a></strong
-        >.
-      </p>
-    </div>
-    <div
-      v-for="request in receivedRequests"
-      :key="request.id"
-      class="alert alert-primary"
-      role="alert"
-    >
-      <p>
-        {{ request.name }} has sent you a friend request and his phone number is
-        <strong> 01273542801</strong>. You can
-        <strong><a href="#" class="alert-link">Accept</a></strong> or yoe can
-        <strong><a href="#" class="alert-link">Deny it</a></strong
-        >.
-      </p>
+    <div v-if="receivedRequests.length > 0">
+      <div
+        v-for="request in receivedRequests"
+        :key="request.id"
+        class="alert alert-primary"
+        role="alert"
+      >
+        <p>
+          {{ request.name }} has sent you a friend request and his phone number
+          is <strong> 01273542801</strong>. You can
+          <strong
+            role="button"
+            :disabled="proccessing"
+            @click="accept(request)"
+            class="alert-link"
+            >Accept It</strong
+          >
+          or you can
+          <strong
+            role="button"
+            :disabled="proccessing"
+            @click="ignore(request)"
+            class="alert-link"
+            >Ignore It</strong
+          >.
+        </p>
+      </div>
     </div>
   </div>
 </template>
 
-<script>
-import axios from "axios";
+<script setup>
 import { AuthStore } from "../../stores/AuthStore";
+import { ReceivedRequestsStore } from "../../stores/ReceivedRequestsStore";
+import { GeneralStore } from "../../stores/GeneralStore";
+import { storeToRefs } from "pinia";
+import echo from "../../echo";
+import axios from "axios";
+import { onMounted, ref } from "vue";
 
-export default {
-  setup() {
-    const auth = AuthStore();
-    return { auth };
-  },
-  data() {
-    return {
-      receivedRequests: [],
-      status: false,
-    };
-  },
-  async mounted() {
-    axios.defaults.headers.common["Authorization"] = this.auth.token(); // `Bearer ${this.auth.token()}`;
+const ReceivedRequestStore = ReceivedRequestsStore();
+const General = GeneralStore();
 
-    await this.getReceivedRequests();
-  },
-  methods: {
-    async getReceivedRequests() {
-      try {
-        let res = await axios.get("receivedRequests");
-        this.receivedRequests = res.data.receivedRequests;
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    async accept(user) {
-      try {
-        let res = await axios.post("acceptRequest", user);
-        console.log("D:", res);
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    toggle() {
-      // this.$refs.email.$el.focus()
-      if (!this.status) {
-        this.$refs.receivedRequests.focus();
-      }
-      this.status = !this.status;
-    },
-    handleFocusOut() {
-      console.log("D:");
-      this.status = false;
-    },
-  },
-};
+const { receivedRequests, status } = storeToRefs(ReceivedRequestStore);
+const auth = AuthStore();
+const proccessing = ref(false);
+
+async function accept(user) {
+  proccessing.value = true;
+  ReceivedRequestStore.status = false;
+
+  await ReceivedRequestStore.acceptRequest(user);
+  General.refreshStores();
+
+  proccessing.value = false;
+}
+
+async function ignore(user) {
+  proccessing.value = true;
+  await ReceivedRequestStore.ignoreRequest(user);
+  proccessing.value = false;
+}
+
+function handleFocusOut() {
+  if (ReceivedRequestStore.status) ReceivedRequestStore.status = false;
+}
+
+function listenToFriendRequestChannel() {
+  window.Echo.private(`friend-request-channel.${auth.user.id}`)
+    .listen("FriendRquestEvent", (e) => {
+      ReceivedRequestStore.setUnreadedReceivedRequestsCount();
+      ReceivedRequestStore.setReceivedRequests();
+    })
+    .error((error) => {
+      console.log(error);
+    });
+}
+
+function listenToCancelFriendRequestChannel() {
+  window.Echo.private(`cancel-friend-request-channel.${auth.user.id}`)
+    .listen("CancelFriendRquestEvent", (e) => {
+      ReceivedRequestStore.setReceivedRequests();
+    })
+    .error((error) => {
+      console.log(error);
+    });
+}
+
+onMounted(async () => {
+  axios.defaults.headers.common["Authorization"] = auth.token(); // `Bearer ${this.auth.token()}`;
+  if (!window.Echo) echo.initLaravelEcho();
+
+  // window.Echo.private(`chat.4`)
+  //   .whisper("typing", {
+  //     name: auth.user.name,
+  //   })
+  //   .listenForWhisper("typing", (e) => {
+  //     console.log(e.name);
+  //   })
+  //   .error((error) => {
+  //     console.log(error);
+  //   });
+  listenToCancelFriendRequestChannel();
+
+  listenToFriendRequestChannel();
+});
 </script>
 
 <style scoped>
