@@ -90,3 +90,9 @@ watch(
   { deep: true }
 );
 </script>
+
+<style scoped>
+#site-container main .users-lists .users-list {
+  grid-template-rows: 30px 60px 1fr;
+}
+</style>

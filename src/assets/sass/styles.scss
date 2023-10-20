@@ -29,6 +29,7 @@
             grid-template-columns: 50% 50%;
             column-gap: 5px;
             transition: all 0.8s;
+            height: calc(100vh - 115px);
 
             .showBtn {
                 position: absolute;
