@@ -11,7 +11,7 @@
           data-target="#view_info"
         >
           <img
-            src="https://bootdey.com/img/Content/avatar/avatar2.png"
+            src="/male.png"
             alt="avatar"
           />
         </a>

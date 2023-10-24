@@ -4,7 +4,7 @@
 
     <form @submit.prevent="register">
       <div class="imgcontainer">
-        <img src="../../public/img_avatar2.png" alt="Avatar" class="avatar" />
+        <img src="/male.png" alt="Avatar" class="avatar" />
       </div>
       <div v-if="errorMessage" class="alert alert-danger">
         <strong>{{ errorMessage }}!</strong>

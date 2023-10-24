@@ -11,10 +11,7 @@
           v-for="chat in chats"
           :key="chat.id"
         >
-          <img
-            src="https://bootdey.com/img/Content/avatar/avatar2.png"
-            alt="avatar"
-          />
+          <img src="/male.png" alt="avatar" />
           <div class="about">
             <p class="name m-0 p-1">{{ chat.user.name }}</p>
             <p class="phone m-0 p-1">01273542801</p>

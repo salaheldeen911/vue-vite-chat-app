@@ -13,14 +13,11 @@
           data-toggle="modal"
           data-target="#view_info"
         >
-          <img
-            src="https://bootdey.com/img/Content/avatar/avatar2.png"
-            alt="avatar"
-          />
+          <img src="/male.png" alt="avatar" />
         </a>
         <div class="chat-about">
           <h6 class="m-b-0">{{ chat.user.name }}</h6>
-          <small v-if="!friendStatus"
+          <small v-if="!friendStatus && !gettingLastSeen"
             >Last seen: {{ chat.user.last_seen }}</small
           >
           <small v-else>Online</small>
@@ -71,7 +68,11 @@
     </div>
 
     <div v-if="!loading" class="chat-message clearfix">
-      <form class="input-group mb-0" @submit.prevent.enter="sendPrivate">
+      <form
+        v-if="chat && chat.status"
+        class="input-group mb-0"
+        @submit.prevent.enter="sendPrivate"
+      >
         <div class="input-group-prepend">
           <TypingAnimation :id="activeChat" />
           <button :disabled="sending" type="submit" class="input-group-text">
@@ -112,12 +113,13 @@ const OnlineStore = OnlineUsersStore();
 const { onlineUsers } = storeToRefs(OnlineStore);
 const chat = ref(null);
 const chatHistory = ref(null);
-const loading = ref(false);
+const loading = ref(true);
 const sending = ref(false);
 const message = ref("");
 const messages = ref([]);
 const channel = ref(null);
 const friendStatus = ref(false);
+const gettingLastSeen = ref(false);
 
 onMounted(async () => {
   loading.value = true;
@@ -152,7 +154,7 @@ function scroll() {
 
 async function getChat() {
   let res = await axios.get(`getPrivateChat/${activeChat.value}`);
-
+  console.log("D:");
   chat.value = res.data.data;
   messages.value = chat.value.messages;
   // loading.value = false;
@@ -245,6 +247,18 @@ watch(
   () => onlineUsers.value,
   () => {
     checkFriendStatus();
+  },
+  { deep: true }
+);
+
+watch(
+  () => friendStatus.value,
+  async () => {
+    if (!friendStatus.value) {
+      gettingLastSeen.value = true;
+      await getChat();
+      gettingLastSeen.value = false;
+    }
   },
   { deep: true }
 );

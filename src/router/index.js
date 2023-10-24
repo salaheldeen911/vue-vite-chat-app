@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import { AuthStore } from "../stores/AuthStore";
 import echo from "../echo";
 import Home from "../views/Home.vue";
+import Game from "../views/Game.vue";
 import Chat from "../views/Chat.vue";
 import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
@@ -12,6 +13,11 @@ const routes = [
     path: "/",
     name: "home",
     component: Home,
+  },
+  {
+    path: "/game",
+    name: "game",
+    component: Game,
   },
   {
     path: "/chat",

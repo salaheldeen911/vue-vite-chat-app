@@ -38,8 +38,8 @@
             >
           </li>
           <li class="nav-item">
-            <router-link v-if="auth.status" class="nav-link mx-2" to="/"
-              >Home</router-link
+            <router-link v-if="auth.status" class="nav-link mx-2" to="/game"
+              >Game</router-link
             >
           </li>
           <li class="nav-item">
@@ -129,6 +129,7 @@ onMounted(async () => {
 async function logout() {
   clicked.value = true;
   try {
+    await axios.post("left-user", auth.user);
     axios.post("logout");
     auth.$reset();
     window.Echo.leave("public-chat");

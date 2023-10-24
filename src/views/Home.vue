@@ -40,6 +40,7 @@
 
       <div class="links">
         <a class="card-link" href="/chat">Go To Public Chat Room</a>
+        <a class="card-link" href="/game">Play A Game</a>
         <a class="card-link" href="/todo">Go To Your To-do list</a>
       </div>
     </div>

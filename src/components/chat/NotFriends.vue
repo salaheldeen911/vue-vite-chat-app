@@ -19,10 +19,7 @@
           :key="user.id"
           class="user mb-2"
         >
-          <img
-            src="https://bootdey.com/img/Content/avatar/avatar2.png"
-            alt="avatar"
-          />
+          <img src="/male.png" alt="avatar" />
           <div class="about">
             <div class="name">{{ user.name }}</div>
             <div v-if="user.status" class="status">

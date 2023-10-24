@@ -25,13 +25,7 @@ const { activeChat, isPublic } = storeToRefs(ChatStore);
 const channel = ref(null);
 const typing = ref(false);
 
-// echo.initLaravelEcho();
-// console.log("D:", activeChat.value);
-console.log("C:", id.value);
-
 channel.value = window.Echo.private(`chat.${id.value}`);
-
-// console.log(channel.value);
 
 channel.value
   .listenForWhisper("typing", (e) => {
@@ -47,10 +41,6 @@ channel.value
 </script>
 
 <style lang="scss" scoped>
-// .typing {
-//   position: absolute;
-//   top: -22px;
-// }
 .dot {
   width: 8px;
   height: 8px;
