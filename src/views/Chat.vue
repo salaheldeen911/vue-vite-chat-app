@@ -1,6 +1,6 @@
 <template>
   <div id="main">
-    <div class="users-lists" ref="usersLists">
+    <div class="users-lists" id="usersLists" ref="usersLists">
       <div @click="showUsers()" class="showBtn none" ref="arrowShow">
         <span
           id="arrowShow"
@@ -38,12 +38,15 @@ const mainChatComponent = ref(null);
 //   mainChatComponent.value.openPrivateChat(id);
 // }
 function showUsers() {
-  friendsComponent.value.classList.add("show-users-lists");
+  console.log("D:");
+  document.getElementById("usersLists").classList.add("show-users-lists");
+  // friendsComponent.value.classList.add("show-users-lists");
   arrowShow.value.classList.add("hide", "disabled");
   arrowHide.value.classList.add("flex");
 }
 function hideUsers() {
-  friendsComponent.value.classList.remove("show-users-lists");
+  document.getElementById("usersLists").classList.remove("show-users-lists");
+  // friendsComponent.value.classList.remove("show-users-lists");
   arrowShow.value.classList.remove("hide", "disabled");
   arrowHide.value.classList.remove("flex");
 }

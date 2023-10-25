@@ -61,8 +61,8 @@
         {{ time ? time + " ms" : "" }}
       </p>
       <h3 class="text-center">High Score</h3>
-      <p class="text-center" style="height: 10px">
-        {{ time ? time + " ms" : "" }}
+      <p v-if="auth.status" class="text-center" style="height: 10px">
+        {{ auth.user.high_score }}
       </p>
     </div>
   </div>
@@ -72,12 +72,18 @@ import { onMounted, ref } from "vue";
 import axios from "axios";
 import { AuthStore } from "../stores/AuthStore";
 
+const auth = AuthStore();
 const playing = ref(false);
 const show = ref(false);
 const time = ref(0);
 const stop = ref(true);
 const showResults = ref(false);
 
+// onMounted(async () => {
+//   let r = await axios.get("get-high-score");
+//   console.log(r);
+//   auth.user.high_score = r.data;
+// })
 function play() {
   document.querySelectorAll(".mole").forEach((e) => {
     e.classList.remove("up");
@@ -106,7 +112,11 @@ function go() {
     time.value += 1;
   }, 1);
 }
-function done() {
+async function done() {
+  if (time.value < auth.user.high_score || auth.user.high_score == 0) {
+    axios.post("high-score", { high_score: time.value + 1 });
+    auth.user.high_score = time.value + 1;
+  }
   (stop.value = true), (showResults.value = true);
   (show.value = false), (playing.value = false);
 }

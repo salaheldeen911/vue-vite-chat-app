@@ -166,24 +166,26 @@
         }
 
         .show-users-lists {
-            left: -40px !important;
+            // left: -40px !important;
+            transform: translateX(calc(0% - 70px)) !important;
         }
 
         @media screen and (max-width: 768px) {
             .users-lists {
+                width: 100%;
                 position: absolute;
                 top: 0;
                 bottom: 0;
                 z-index: 48;
-                left: -587px;
-                grid-template-columns: 45% 45%;
+                transform: translateX(calc(-100% - 76px));
+                // grid-template-columns: 45% 45%;
 
                 .users-list {
                     background: gray;
                 }
 
                 .hideBtn {
-                    right: -17px;
+                    right: -73px;
                     box-shadow: 3px 2px 2px 1px rgb(0 0 0 / 20%);
                 }
 
@@ -198,7 +200,7 @@
         @media screen and (max-width: 600px) {
             .users-lists {
                 grid-template-columns: 40% 40% !important;
-                left: -565px;
+                transform: translateX(-385px);
 
                 .showBtn,
                 .hideBtn {

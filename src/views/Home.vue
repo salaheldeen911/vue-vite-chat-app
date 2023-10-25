@@ -39,23 +39,25 @@
       </div>
 
       <div class="links">
-        <a class="card-link" href="/chat">Go To Public Chat Room</a>
-        <a class="card-link" href="/game">Play A Game</a>
-        <a class="card-link" href="/todo">Go To Your To-do list</a>
+        <router-link v-if="auth.status" class="card-link" to="/chat"
+          >Go To Public Chat Room</router-link
+        >
+        <router-link v-if="auth.status" class="card-link" to="/game"
+          >Play A Game</router-link
+        >
+
+        <router-link v-if="auth.status" class="card-link" to="/todo"
+          >Go To Your To-do list</router-link
+        >
       </div>
     </div>
   </div>
 </template>
 
-<script>
-// @ is an alias to /src
-// import HelloWorld from "../components/HelloWorld.vue";
+<script setup>
+import { AuthStore } from "../stores/AuthStore";
 
-// export default {
-//   components: {
-//     HelloWorld,
-//   },
-// };
+const auth = AuthStore();
 </script>
 
 <style scoped lang="scss">

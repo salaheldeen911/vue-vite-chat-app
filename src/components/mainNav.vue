@@ -2,7 +2,7 @@
   <nav class="navbar navbar-expand-lg navbar-dark p-3 bg-danger" id="headerNav">
     <div class="container-fluid">
       <a class="navbar-brand d-block d-lg-none" href="#">
-        <img src="/vite.svg" height="80" />
+        <img src="/vite.svg" />
       </a>
       <button
         ref="toggler"
