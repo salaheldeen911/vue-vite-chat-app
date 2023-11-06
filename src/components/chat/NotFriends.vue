@@ -19,7 +19,7 @@
           :key="user.id"
           class="user mb-2"
         >
-          <img src="/male.png" alt="avatar" />
+          <img :src="user.gender ? '/male.png' : '/female.png'" alt="avatar" />
           <div class="about">
             <div class="name">{{ user.name }}</div>
             <div v-if="user.status" class="status">

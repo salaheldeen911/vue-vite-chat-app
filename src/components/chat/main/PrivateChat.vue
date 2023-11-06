@@ -13,7 +13,10 @@
           data-toggle="modal"
           data-target="#view_info"
         >
-          <img src="/male.png" alt="avatar" />
+          <img
+            :src="chat.user.gender ? '/male.png' : '/female.png'"
+            alt="avatar"
+          />
         </a>
         <div class="chat-about">
           <h6 class="m-b-0">{{ chat.user.name }}</h6>

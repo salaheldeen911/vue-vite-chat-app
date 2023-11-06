@@ -3,30 +3,6 @@
     <preLoader v-if="loading" ref="preLoader" />
 
     <div class="titel text-center fw-bold fst-italic">Public Chat</div>
-    <!-- <div class="main-chat-header">
-      <div class="userInfo">
-        <a
-          href="javascript:void(0);"
-          data-toggle="modal"
-          data-target="#view_info"
-        >
-          <img
-            src="/male.png"
-            alt="avatar"
-          />
-        </a>
-        <div class="chat-about">
-          <h6 class="m-b-0">{{ auth.user ? auth.user.name : "" }}</h6>
-          <small>Last seen: 2 hours ago</small>
-        </div>
-      </div>
-
-      <div class="chat-icons">
-        <a href="javascript:void(0);" class="btn btn-outline-primary"
-          ><i class="mdi mdi-image h5"></i
-        ></a>
-      </div>
-    </div> -->
 
     <div class="chat-history" ref="chatHistory">
       <ul class="m-b-0" v-if="data.length">
@@ -47,6 +23,11 @@
                 : 'my-message',
             ]"
           >
+            <img
+              v-if="message.user.id !== auth.user.id"
+              :src="message.user.gender ? '/male.png' : '/female.png'"
+              alt="avatar"
+            />
             <span
               v-if="auth.user && message.user.id !== auth.user.id"
               class="fw-bold fst-italic"

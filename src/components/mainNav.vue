@@ -143,8 +143,8 @@ async function logout() {
   }
 }
 async function readAllReceivedRequests() {
-  if (lastRequest.value >= Date.now() - delay.value) return;
-
+  // if (lastRequest.value >= Date.now() - delay.value) return;
+  console.log("D:");
   await ReceivedRequestStore.readAllReceivedRequests();
   ReceivedRequestStore.setUnreadedReceivedRequestsCount();
 

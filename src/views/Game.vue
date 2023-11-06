@@ -1,69 +1,88 @@
 <template>
-  <div class="game-container">
-    <h1>Ninja Reaction Timer</h1>
-    <button
-      style="margin: 14px auto"
-      class="d-block btn btn-warning"
-      @click="play"
-      :disabled="playing"
+  <div id="center" class="center">
+    <div
+      style="
+        height: 320px;
+        width: 320px;
+        position: absolute;
+        top: 18%;
+        z-index: -12;
+        left: 18%;
+        opacity: 0.3;
+      "
     >
-      Play
-    </button>
-    <div class="container-fluid">
-      <div class="row mb-5">
-        <div class="col-lg-4">
-          <div class="hole">
-            <div id="1" class="mole" v-on:click="done">
-              <img src="/mole.png" />
+      <img style="height: 100%; width: 100%" src="/vite.svg" alt="" />
+    </div>
+    <h1 class="text-danger">Ninja Whack-a-Mole Timer</h1>
+    <div class="game-container">
+      <button
+        style="margin: 14px auto"
+        class="d-block btn btn-dark"
+        @click="play"
+        :disabled="playing"
+      >
+        Play
+      </button>
+      <div class="container-fluid">
+        <div class="row mb-5">
+          <div class="col-4">
+            <div class="hole">
+              <div id="1" class="mole" v-on:click="done">
+                <img src="/mole.png" />
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="hole">
+              <div id="2" class="mole" v-on:click="done">
+                <img src="/mole.png" />
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="hole">
+              <div id="3" class="mole" v-on:click="done">
+                <img src="/mole.png" />
+              </div>
             </div>
           </div>
         </div>
-        <div class="col-lg-4">
-          <div class="hole">
-            <div id="2" class="mole" v-on:click="done">
-              <img src="/mole.png" />
+        <div class="row">
+          <div class="col-4">
+            <div class="hole">
+              <div id="4" class="mole" v-on:click="done">
+                <img src="/mole.png" />
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="hole">
+              <div id="5" class="mole" v-on:click="done">
+                <img src="/mole.png" />
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="hole">
+              <div id="6" class="mole" v-on:click="done">
+                <img src="/mole.png" />
+              </div>
             </div>
           </div>
         </div>
-        <div class="col-lg-4">
-          <div class="hole">
-            <div id="3" class="mole" v-on:click="done">
-              <img src="/mole.png" />
-            </div>
-          </div>
-        </div>
+        <h3 class="text-center">Your Score</h3>
+        <p class="text-center" style="height: 10px">
+          {{ time ? time + " ms" : "" }}
+        </p>
+        <h3 class="text-center">High Score</h3>
+        <h2
+          v-if="auth.status"
+          class="text-center text-success"
+          style="height: 10px"
+        >
+          {{ auth.user.high_score }}
+        </h2>
       </div>
-      <div class="row">
-        <div class="col-lg-4">
-          <div class="hole">
-            <div id="4" class="mole" v-on:click="done">
-              <img src="/mole.png" />
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4">
-          <div class="hole">
-            <div id="5" class="mole" v-on:click="done">
-              <img src="/mole.png" />
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4">
-          <div class="hole">
-            <div id="6" class="mole" v-on:click="done">
-              <img src="/mole.png" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <h3 class="text-center">Your Score</h3>
-      <p class="text-center" style="height: 10px">
-        {{ time ? time + " ms" : "" }}
-      </p>
-      <h3 class="text-center">High Score</h3>
-      <p v-if="auth.status" class="text-center" style="height: 10px">
-        {{ auth.user.high_score }}
-      </p>
     </div>
   </div>
 </template>
@@ -79,11 +98,6 @@ const time = ref(0);
 const stop = ref(true);
 const showResults = ref(false);
 
-// onMounted(async () => {
-//   let r = await axios.get("get-high-score");
-//   console.log(r);
-//   auth.user.high_score = r.data;
-// })
 function play() {
   document.querySelectorAll(".mole").forEach((e) => {
     e.classList.remove("up");
@@ -102,7 +116,7 @@ function play() {
   }, timeToShow());
 }
 function timeToShow() {
-  return Math.floor(2000 + Math.random() * 6000);
+  return Math.floor(500 + Math.random() * 4000);
 }
 function go() {
   let score = setInterval(() => {
@@ -130,11 +144,9 @@ h1 {
 
 .game-container {
   height: calc(100vh - 150px);
-  overflow: auto;
   width: 500px;
-  height: 490px;
+  height: 430px;
   margin: 0 auto;
-  border: 2px solid #333;
   border-radius: 10px;
   padding: 10px;
 }
@@ -176,6 +188,23 @@ h1 {
   text-align: center;
   font-size: 24px;
   margin-top: 20px;
+}
+
+.center {
+  width: 520px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 10px;
+  padding: 0 0 20px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+  opacity: 0.9;
+  position: relative;
+}
+
+.center h1 {
+  text-align: center;
+  padding: 20px 0;
+  border-bottom: 1px solid silver;
 }
 </style>
 

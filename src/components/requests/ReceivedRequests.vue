@@ -100,16 +100,6 @@ onMounted(async () => {
   axios.defaults.headers.common["Authorization"] = auth.token(); // `Bearer ${this.auth.token()}`;
   if (!window.Echo) echo.initLaravelEcho();
 
-  // window.Echo.private(`chat.4`)
-  //   .whisper("typing", {
-  //     name: auth.user.name,
-  //   })
-  //   .listenForWhisper("typing", (e) => {
-  //     console.log(e.name);
-  //   })
-  //   .error((error) => {
-  //     console.log(error);
-  //   });
   listenToCancelFriendRequestChannel();
 
   listenToFriendRequestChannel();

@@ -11,7 +11,10 @@
           v-for="chat in chats"
           :key="chat.id"
         >
-          <img src="/male.png" alt="avatar" />
+          <img
+            :src="chat.user.gender ? '/male.png' : '/female.png'"
+            alt="avatar"
+          />
           <div class="about">
             <p class="name m-0 p-1">{{ chat.user.name }}</p>
             <p class="phone m-0 p-1">01273542801</p>
