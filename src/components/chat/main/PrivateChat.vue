@@ -99,15 +99,12 @@ import { OnlineUsersStore } from "../../../stores/OnlineUsersStore";
 import { ChatsStore } from "../../../stores/ChatsStore";
 import axios from "axios";
 import { storeToRefs } from "pinia";
-import { onMounted, watch, ref } from "vue";
+import { onMounted, watch, ref, getCurrentInstance } from "vue";
 import preLoader from "../../preLoader.vue";
 import TypingAnimation from "../../TypingAnimation.vue";
 import { AuthStore } from "../../../stores/AuthStore";
 import { GeneralStore } from "../../../stores/GeneralStore";
 
-// const props = defineProps({
-//   id: Number,
-// });
 const auth = AuthStore();
 const ChatStore = ChatsStore();
 const General = GeneralStore();
@@ -128,7 +125,6 @@ onMounted(async () => {
   loading.value = true;
   await getChat();
   loading.value = false;
-
   scroll();
 
   channel.value = window.Echo.private(`chat.${activeChat.value}`);
@@ -138,6 +134,14 @@ onMounted(async () => {
       messages.value.push(e.message);
 
       scroll();
+    })
+    .error((error) => {
+      console.log(error);
+    });
+
+  window.Echo.private(`unfriend-user-channel.${auth.user.id}`)
+    .listen("UnfriendEvent", (e) => {
+      resetChat();
     })
     .error((error) => {
       console.log(error);
@@ -157,10 +161,8 @@ function scroll() {
 
 async function getChat() {
   let res = await axios.get(`getPrivateChat/${activeChat.value}`);
-  console.log("D:");
   chat.value = res.data.data;
   messages.value = chat.value.messages;
-  // loading.value = false;
 }
 
 function validate(message) {
@@ -168,8 +170,8 @@ function validate(message) {
   const htmlPreventer = /<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g;
   if (htmlPreventer.test(message)) return false;
 
-  // to accept all chars, nums, spaces, new lines and prevent less than 3 chars, over 255 chars.
-  const pattern = /^(?!.{256})\s*\S.{0,253}\S\s*$/;
+  // to accept all chars, nums, spaces, new lines and prevent less than 1 chars, over 255 chars.
+  const pattern = /^(?!.{256})\s*\S.{1,255}\S\s*$/;
 
   return pattern.test(message);
 }
@@ -191,17 +193,17 @@ async function sendPrivate() {
   }
 
   message.value = "";
-  // $refs.mainInput.focus();
   sending.value = false;
 }
 
 async function unfriend(user) {
   try {
-    let i = await axios.delete("unfriend", {
+    await axios.delete("unfriend", {
       data: { user: user, chat_id: ChatStore.activeChat },
     });
     resetChat();
     General.refreshStores();
+    chat.status = false;
   } catch (error) {
     console.log(error);
   }

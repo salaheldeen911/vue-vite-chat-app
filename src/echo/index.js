@@ -42,12 +42,7 @@ function joinPublicChat() {
       OnlineUsers.joined(user);
     })
     .leaving(async (user) => {
-      // removing the left user from users
-      // let l = await axios.post("left-user", user);
-
       OnlineUsers.left(user);
-
-      // console.log("D:", l);
     })
     .error((error) => {
       console.log(error);

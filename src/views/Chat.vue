@@ -34,19 +34,13 @@ const arrowShow = ref(null);
 const arrowHide = ref(null);
 const mainChatComponent = ref(null);
 
-// function openChat(id) {
-//   mainChatComponent.value.openPrivateChat(id);
-// }
 function showUsers() {
-  console.log("D:");
   document.getElementById("usersLists").classList.add("show-users-lists");
-  // friendsComponent.value.classList.add("show-users-lists");
   arrowShow.value.classList.add("hide", "disabled");
   arrowHide.value.classList.add("flex");
 }
 function hideUsers() {
   document.getElementById("usersLists").classList.remove("show-users-lists");
-  // friendsComponent.value.classList.remove("show-users-lists");
   arrowShow.value.classList.remove("hide", "disabled");
   arrowHide.value.classList.remove("flex");
 }

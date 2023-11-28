@@ -43,13 +43,9 @@ const { chats } = storeToRefs(ChatStore);
 const OnlineStore = OnlineUsersStore();
 const { onlineUsers } = storeToRefs(OnlineStore);
 
-// const emit = defineEmits(["openchat"]);
-
 function openChat(id) {
   ChatStore.setIsPublic(false);
   ChatStore.setActiveChat(id);
-
-  // emit("openChat", id);
 }
 
 async function setChats() {

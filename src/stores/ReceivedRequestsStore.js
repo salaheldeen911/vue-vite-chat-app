@@ -24,7 +24,6 @@ export const ReceivedRequestsStore = defineStore("receivedRequests", {
 
         let count = await axios.get("unreadedReceivedRequestsCount");
 
-        console.log(count.data.data.count);
         this.unreadedReceivedRequestsCount = count.data.data.count;
       } catch (errors) {
         console.log(errors);
@@ -50,7 +49,6 @@ export const ReceivedRequestsStore = defineStore("receivedRequests", {
     },
     async readAllReceivedRequests() {
       try {
-        console.log("D:d");
         axios.put("readAllReceivedRequests");
       } catch (error) {
         console.log(error);

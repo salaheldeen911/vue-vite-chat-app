@@ -48,7 +48,7 @@
             >
           </li>
           <li class="nav-item d-none d-lg-block">
-            <router-link v-if="auth.status" class="nav-link mx-2" to="/">
+            <router-link class="nav-link mx-2" to="/">
               <div style="width: 100px; height: 40px">
                 <img style="width: 100%; height: 100%" src="/vite.svg" />
               </div>
@@ -143,8 +143,6 @@ async function logout() {
   }
 }
 async function readAllReceivedRequests() {
-  // if (lastRequest.value >= Date.now() - delay.value) return;
-  console.log("D:");
   await ReceivedRequestStore.readAllReceivedRequests();
   ReceivedRequestStore.setUnreadedReceivedRequestsCount();
 

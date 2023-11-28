@@ -30,7 +30,7 @@
           class="input-hidden"
           value="1"
         />
-        <label class="img-label" for="male">
+        <label role="button" class="img-label" for="male">
           <img src="/male.png" alt="male" />
         </label>
         <input
@@ -41,7 +41,7 @@
           class="input-hidden"
           value="0"
         />
-        <label class="img-label" for="female">
+        <label role="button" class="img-label" for="female">
           <img src="/female.png" alt="female" />
         </label>
       </div>
@@ -70,7 +70,7 @@
       </div>
       <input
         type="submit"
-        value="Login"
+        value="Resgister"
         :disabled="submiting"
         :class="{ disabled: submiting }"
       />

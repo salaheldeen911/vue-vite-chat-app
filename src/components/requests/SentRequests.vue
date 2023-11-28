@@ -112,9 +112,7 @@ async function cancelRequest(user) {
 }
 
 function handleFocusOut() {
-  // setTimeout(() => {
   if (SentRequestStore.status) SentRequestStore.status = false;
-  // }, 200);
 }
 
 onMounted(async () => {
@@ -122,26 +120,6 @@ onMounted(async () => {
 
   await getSentRequests();
 });
-
-// watch(
-//   () => status.value,
-//   () => {
-//     toggle();
-//   },
-//   { deep: true }
-// );
-
-// watch(
-//   () => sentRequests.value,
-//   () => {
-//     // getUsers();
-//   },
-//   { deep: true }
-// );
-
-// defineExpose({
-//   toggle,
-// });
 </script>
 
 <style scoped>

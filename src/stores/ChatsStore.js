@@ -38,7 +38,6 @@ export const ChatsStore = defineStore("chats", {
         key: "chats",
         storage: localStorage,
         paths: ["chats"],
-        // paths: ["chats", "activeChat", "isPublic"],
       },
     ],
     enabled: true,

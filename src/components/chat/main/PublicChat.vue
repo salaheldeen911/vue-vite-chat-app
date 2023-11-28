@@ -141,7 +141,7 @@ export default {
       const htmlPreventer = /<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g;
       if (htmlPreventer.test(body)) return false;
 
-      // to accept all chars, nums, spaces, new lines and prevent less than 3 chars, over 255 chars.
+      // to accept all chars, nums, spaces, new lines and prevent less than 1 chars, over 255 chars.
       const pattern = /^([a-zA-Z0-9_ \s\S-]){1,5000}$/;
 
       return pattern.test(body);

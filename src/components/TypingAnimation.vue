@@ -30,7 +30,6 @@ channel.value = window.Echo.private(`chat.${id.value}`);
 channel.value
   .listenForWhisper("typing", (e) => {
     typing.value = true;
-    console.log("D:");
   })
   .listenForWhisper("typing-stoped", (e) => {
     typing.value = false;

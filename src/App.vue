@@ -55,21 +55,7 @@ function sentRequest() {
 function updateUnreadedReceivedRequestsCount() {
   mainNavComponent.value.getUnreadedReceivedRequestsCount();
 }
-// function showSentRequests() {
-//   SentRequestsComponent.value.toggle();
-// }
-
-// function showReceivedRequests() {
-//   ReceivedRequestsComponent.value.toggle();
-// }
-
-// function updateReceivedRequests() {
-//   ReceivedRequestsComponent.value.getReceivedRequests();
-//   mainNavComponent.value.getUnreadedReceivedRequestsCount();
-// }
 </script>
-
-
 
 <style lang="scss">
 @import "../node_modules/bootstrap/scss/bootstrap";

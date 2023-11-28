@@ -63,7 +63,6 @@ const auth = AuthStore();
 <style scoped lang="scss">
 .home {
   height: calc(100vh - 115px);
-  // display: flex;
 }
 .links {
   justify-self: end;
