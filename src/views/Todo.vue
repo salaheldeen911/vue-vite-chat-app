@@ -31,8 +31,7 @@ const onAddTodo = (body) => {
 #todoContainer {
   position: relative;
   width: 500px;
-  height: 550px;
-  margin-bottom: 20px;
+  height: calc(100vh - 135px);
   border-radius: 30px;
   opacity: 0.8;
   display: grid;

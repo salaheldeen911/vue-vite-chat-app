@@ -200,6 +200,7 @@ export default {
 
       // to accept all chars, nums, spaces, new lines and prevent less than 1 chars, over 255 chars.
       const pattern = /^([a-zA-Z0-9_ \s\S-]){1,255}$/;
+
       return pattern.test(body);
     },
 

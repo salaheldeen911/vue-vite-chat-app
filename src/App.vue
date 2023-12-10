@@ -18,7 +18,14 @@
       />
       <router-view />
     </main>
-    <footer></footer>
+    <footer>
+      <p class="text-center m-0">
+        Copyright © All Rights Reserved by
+        <a href="https://salaheldeen911.github.io/new-cv/" target="_blank"
+          >salaheldeen911</a
+        >
+      </p>
+    </footer>
   </div>
 </template>
 <script setup>
